@@ -1,0 +1,4 @@
+<paths>
+    <external-path name="log" path="MKButton/"/>
+    <external-path name="*" path="."/>
+</paths>
