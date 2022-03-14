@@ -210,7 +210,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PASSWORD:
-                        if (value.length == 4) {
+                        if (value.length == 5) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -226,7 +226,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_MODIFY_PASSWORD:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -235,10 +235,22 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                         break;
                                 }
                             }
+                            if (flag == 0x00) {
+                                // read
+                                switch (configKeyEnum) {
+                                    case KEY_VERIFY_PASSWORD_ENABLE:
+                                        if (length > 0) {
+                                            int enable = value[4] & 0xFF;
+                                            deviceFragment.setViewShown(enable == 1);
+                                        }
+                                        break;
+
+                                }
+                            }
                         }
                         break;
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -255,7 +267,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                 switch (configKeyEnum) {
                                     case KEY_EFFECTIVE_CLICK_INTERVAL:
                                     case KEY_DEVICE_NAME:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -285,13 +297,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             deviceFragment.setDeviceName(deviceName);
                                         }
                                         break;
-                                    case KEY_VERIFY_PASSWORD_ENABLE:
-                                        if (length > 0) {
-                                            int enable = value[4] & 0xFF;
-                                            deviceFragment.setViewShown(enable == 1);
-                                        }
-                                        break;
-
                                 }
                             }
                         }

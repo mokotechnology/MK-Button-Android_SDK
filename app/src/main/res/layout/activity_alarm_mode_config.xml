@@ -31,7 +31,8 @@
             android:layout_centerInParent="true"
             android:text="Single press mode"
             android:textColor="@color/white_ffffff"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_save"
@@ -136,6 +137,7 @@
                             android:layout_width="200dp"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
+                            android:layout_marginRight="-1dp"
                             android:digits="0123456789abcdefABCDEF"
                             android:hint="1-8 bytes"
                             android:maxLength="16"
@@ -365,6 +367,7 @@
                             android:id="@+id/rl_abnormal_inactivity_time"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
                             android:visibility="gone">
 
                             <TextView
@@ -387,7 +390,7 @@
 
                             <EditText
                                 android:id="@+id/et_abnormal_inactivity_time"
-                                android:layout_width="150dp"
+                                android:layout_width="120dp"
                                 android:layout_height="40dp"
                                 android:layout_alignBaseline="@id/abnormal_inactivity_time_unit"
                                 android:layout_marginRight="5dp"
@@ -436,7 +439,7 @@
 
                             <EditText
                                 android:id="@+id/et_trigger_adv_time"
-                                android:layout_width="150dp"
+                                android:layout_width="120dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="5dp"
                                 android:layout_toLeftOf="@id/trigger_adv_time_unit"

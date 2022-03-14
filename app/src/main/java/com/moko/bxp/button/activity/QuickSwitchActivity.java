@@ -122,7 +122,7 @@ public class QuickSwitchActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -139,11 +139,10 @@ public class QuickSwitchActivity extends BaseActivity {
                                 switch (configKeyEnum) {
                                     case KEY_BLE_CONNECTABLE:
                                     case KEY_BUTTON_POWER_ENABLE:
-                                    case KEY_VERIFY_PASSWORD_ENABLE:
                                     case KEY_BUTTON_RESET_ENABLE:
                                     case KEY_SCAN_RESPONSE_ENABLE:
                                     case KEY_DISMISS_ALARM_ENABLE:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -158,44 +157,71 @@ public class QuickSwitchActivity extends BaseActivity {
                                         break;
                                 }
                             }
-                            if (flag == 0x00) {
+                            if (flag == 0x00 && length == 1) {
                                 // read
+                                int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_BLE_CONNECTABLE:
-                                        if (length == 1) {
-                                            int enable = value[4] & 0xFF;
-                                            setConnectable(enable);
-                                        }
+                                        setConnectable(result);
                                         break;
                                     case KEY_BUTTON_POWER_ENABLE:
-                                        if (length == 1) {
-                                            int enable = value[4] & 0xFF;
-                                            setButtonPower(enable);
-                                        }
+                                        setButtonPower(result);
                                         break;
                                     case KEY_VERIFY_PASSWORD_ENABLE:
-                                        if (length == 1) {
-                                            int enable = value[4] & 0xFF;
-                                            setPasswordVerify(enable);
-                                        }
+                                        setPasswordVerify(result);
                                         break;
                                     case KEY_BUTTON_RESET_ENABLE:
-                                        if (length == 1) {
-                                            int enable = value[4] & 0xFF;
-                                            setButtonResetEnable(enable);
-                                        }
+                                        setButtonResetEnable(result);
                                         break;
                                     case KEY_SCAN_RESPONSE_ENABLE:
-                                        if (length == 1) {
-                                            int enable = value[4] & 0xFF;
-                                            setScanResponseEnable(enable);
-                                        }
+                                        setScanResponseEnable(result);
                                         break;
                                     case KEY_DISMISS_ALARM_ENABLE:
-                                        if (length == 1) {
-                                            int enable = value[4] & 0xFF;
-                                            setDismissAlarmEnable(enable);
+                                        setDismissAlarmEnable(result);
+                                        break;
+
+                                }
+                            }
+                        }
+                        break;
+                    case CHAR_PASSWORD:
+                        if (value.length > 4) {
+                            int header = value[0] & 0xFF;// 0xEB
+                            int flag = value[1] & 0xFF;// read or write
+                            int cmd = value[2] & 0xFF;
+                            if (header != 0xEB)
+                                return;
+                            ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                            if (configKeyEnum == null) {
+                                return;
+                            }
+                            int length = value[3] & 0xFF;
+                            if (flag == 0x01 && length == 0x01) {
+                                // write
+                                int result = value[4] & 0xFF;
+                                switch (configKeyEnum) {
+                                    case KEY_VERIFY_PASSWORD_ENABLE:
+                                        if (result == 0) {
+                                            isConfigError = true;
                                         }
+                                        if (isConfigError) {
+                                            ToastUtils.showToast(QuickSwitchActivity.this, "Opps！Save failed. Please check the input characters and try again.");
+                                        } else {
+                                            AlertMessageDialog dialog = new AlertMessageDialog();
+                                            dialog.setMessage("Saved Successfully！");
+                                            dialog.setConfirm("OK");
+                                            dialog.setCancelGone();
+                                            dialog.show(getSupportFragmentManager());
+                                        }
+                                        break;
+                                }
+                            }
+                            if (flag == 0x00 && length == 1) {
+                                // read
+                                int result = value[4] & 0xFF;
+                                switch (configKeyEnum) {
+                                    case KEY_VERIFY_PASSWORD_ENABLE:
+                                        setPasswordVerify(result);
                                         break;
 
                                 }

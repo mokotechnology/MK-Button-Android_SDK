@@ -31,7 +31,8 @@
             android:layout_centerInParent="true"
             android:text="Dismiss alarm configuration"
             android:textColor="@color/white_ffffff"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_save"
@@ -69,7 +70,7 @@
                     android:text="Dismiss alarm"
                     android:textColor="@color/black_333333"
                     android:textSize="17sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -128,7 +129,8 @@
                     android:id="@+id/cl_led_notify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/led_notify"
@@ -226,7 +228,8 @@
                     android:id="@+id/cl_vibration_notify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/vibration_notify"
@@ -324,7 +327,8 @@
                     android:id="@+id/cl_buzzer_notify"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:id="@+id/buzzer_notify"

@@ -132,6 +132,18 @@ public class MokoSupport extends MokoBleLib {
         if (responseUUID.equals(OrderCHAR.CHAR_DISCONNECT.getUuid())) {
             orderCHAR = OrderCHAR.CHAR_DISCONNECT;
         }
+        if (responseUUID.equals(OrderCHAR.CHAR_ACC.getUuid())) {
+            orderCHAR = OrderCHAR.CHAR_ACC;
+        }
+        if (responseUUID.equals(OrderCHAR.CHAR_SINGLE_TRIGGER.getUuid())) {
+            orderCHAR = OrderCHAR.CHAR_SINGLE_TRIGGER;
+        }
+        if (responseUUID.equals(OrderCHAR.CHAR_DOUBLE_TRIGGER.getUuid())) {
+            orderCHAR = OrderCHAR.CHAR_DOUBLE_TRIGGER;
+        }
+        if (responseUUID.equals(OrderCHAR.CHAR_LONG_TRIGGER.getUuid())) {
+            orderCHAR = OrderCHAR.CHAR_LONG_TRIGGER;
+        }
         if (orderCHAR == null)
             return false;
         XLog.i(orderCHAR.name());

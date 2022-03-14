@@ -67,7 +67,7 @@ public class RemoteReminderActivity extends BaseActivity {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
         runOnUiThread(new Runnable() {
@@ -81,7 +81,7 @@ public class RemoteReminderActivity extends BaseActivity {
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
         EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
@@ -98,7 +98,7 @@ public class RemoteReminderActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -116,7 +116,7 @@ public class RemoteReminderActivity extends BaseActivity {
                                     case KEY_REMOTE_LED_NOTIFY_ALARM_PARAMS:
                                     case KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS:
                                     case KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -139,7 +139,7 @@ public class RemoteReminderActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             etBlinkingTime.setText(String.valueOf(time));
-                                            etBlinkingInterval.setText(String.valueOf(interval));
+                                            etBlinkingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS:
@@ -147,7 +147,7 @@ public class RemoteReminderActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             etVibratingTime.setText(String.valueOf(time));
-                                            etVibratingInterval.setText(String.valueOf(interval));
+                                            etVibratingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS:
@@ -155,7 +155,7 @@ public class RemoteReminderActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             etRingingTime.setText(String.valueOf(time));
-                                            etRingingInterval.setText(String.valueOf(interval));
+                                            etRingingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                 }
@@ -195,10 +195,8 @@ public class RemoteReminderActivity extends BaseActivity {
             showSyncingProgressDialog();
             String ledTimeStr = etBlinkingTime.getText().toString();
             String ledIntervalStr = etBlinkingInterval.getText().toString();
-
             int ledTime = Integer.parseInt(ledTimeStr);
-            int ledInterval = Integer.parseInt(ledIntervalStr);
-
+            int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.setRemoteLEDNotifyAlarmParams(ledTime, ledInterval));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
@@ -210,13 +208,12 @@ public class RemoteReminderActivity extends BaseActivity {
     public void onVibrationNotifyRemind(View view) {
         if (isWindowLocked())
             return;
-
         if (isVibrationValid()) {
             showSyncingProgressDialog();
             String vibrationTimeStr = etVibratingTime.getText().toString();
             String vibrationIntervalStr = etVibratingInterval.getText().toString();
             int vibrationTime = Integer.parseInt(vibrationTimeStr);
-            int vibrationInterval = Integer.parseInt(vibrationIntervalStr);
+            int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.setRemoteVibrationNotifyAlarmParams(vibrationTime, vibrationInterval));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
@@ -228,13 +225,12 @@ public class RemoteReminderActivity extends BaseActivity {
     public void onBuzzerNotifyRemind(View view) {
         if (isWindowLocked())
             return;
-
         if (isBuzzerValid()) {
             showSyncingProgressDialog();
             String buzzerTimeStr = etRingingTime.getText().toString();
             String buzzerIntervalStr = etRingingInterval.getText().toString();
             int buzzerTime = Integer.parseInt(buzzerTimeStr);
-            int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
+            int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.setRemoteBuzzerNotifyAlarmParams(buzzerTime, buzzerInterval));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));

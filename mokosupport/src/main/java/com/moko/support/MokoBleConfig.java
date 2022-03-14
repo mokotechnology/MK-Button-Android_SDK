@@ -64,7 +64,7 @@ final class MokoBleConfig extends MokoBleManager {
     @Override
     public void discovered(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         UUID lastCharacteristicUUID = characteristic.getUuid();
-        if (paramsCharacteristic.getUuid().equals(lastCharacteristicUUID))
+        if (passwordCharacteristic.getUuid().equals(lastCharacteristicUUID))
             mMokoResponseCallback.onServicesDiscovered(gatt);
     }
 
@@ -100,17 +100,17 @@ final class MokoBleConfig extends MokoBleManager {
 
 
     public void enableParamsNotify() {
-        setIndicationCallback(passwordCharacteristic).with((device, data) -> {
+        setIndicationCallback(paramsCharacteristic).with((device, data) -> {
             final byte[] value = data.getValue();
             XLog.e("onDataReceived");
             XLog.e("device to app : " + MokoUtils.bytesToHexString(value));
-            mMokoResponseCallback.onCharacteristicChanged(passwordCharacteristic, value);
+            mMokoResponseCallback.onCharacteristicChanged(paramsCharacteristic, value);
         });
-        enableNotifications(passwordCharacteristic).enqueue();
+        enableNotifications(paramsCharacteristic).enqueue();
     }
 
     public void disableParamsNotify() {
-        disableNotifications(passwordCharacteristic).enqueue();
+        disableNotifications(paramsCharacteristic).enqueue();
     }
 
     public void enableDisconnectNotify() {
@@ -125,6 +125,20 @@ final class MokoBleConfig extends MokoBleManager {
 
     public void disableDisconnectNotify() {
         disableNotifications(disconnectCharacteristic).enqueue();
+    }
+
+    public void enablePasswordNotify() {
+        setIndicationCallback(passwordCharacteristic).with((device, data) -> {
+            final byte[] value = data.getValue();
+            XLog.e("onDataReceived");
+            XLog.e("device to app : " + MokoUtils.bytesToHexString(value));
+            mMokoResponseCallback.onCharacteristicChanged(passwordCharacteristic, value);
+        });
+        enableNotifications(passwordCharacteristic).enqueue();
+    }
+
+    public void disablePasswordNotify() {
+        disableNotifications(passwordCharacteristic).enqueue();
     }
 
     public void enableSingleTriggerNotify() {
@@ -181,19 +195,5 @@ final class MokoBleConfig extends MokoBleManager {
 
     public void disableAccNotify() {
         disableNotifications(accCharacteristic).enqueue();
-    }
-
-    public void enablePasswordNotify() {
-        setIndicationCallback(passwordCharacteristic).with((device, data) -> {
-            final byte[] value = data.getValue();
-            XLog.e("onDataReceived");
-            XLog.e("device to app : " + MokoUtils.bytesToHexString(value));
-            mMokoResponseCallback.onCharacteristicChanged(passwordCharacteristic, value);
-        });
-        enableNotifications(passwordCharacteristic).enqueue();
-    }
-
-    public void disablePasswordNotify() {
-        disableNotifications(passwordCharacteristic).enqueue();
     }
 }

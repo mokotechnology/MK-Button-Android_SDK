@@ -67,7 +67,7 @@ public class AlarmEventActivity extends BaseActivity {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
         runOnUiThread(new Runnable() {
@@ -81,7 +81,7 @@ public class AlarmEventActivity extends BaseActivity {
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
         EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
@@ -98,7 +98,7 @@ public class AlarmEventActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -138,7 +138,7 @@ public class AlarmEventActivity extends BaseActivity {
                                         }
                                         break;
                                     case KEY_SYSTEM_TIME:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Success！");

@@ -210,7 +210,7 @@ public class ParamsTask extends OrderTask {
         data = new byte[]{
                 (byte) 0xEA,
                 (byte) 0x00,
-                (byte) ParamsKeyEnum.KEY_SLOT_PARAMS.getParamsKey(),
+                (byte) ParamsKeyEnum.KEY_SLOT_TRIGGER_PARAMS.getParamsKey(),
                 (byte) 0x01,
                 (byte) slot
         };
@@ -253,12 +253,14 @@ public class ParamsTask extends OrderTask {
         response.responseValue = data;
     }
 
-    public void setSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 1) int enable) {
+    public void setSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 3) int slot,
+                                              @IntRange(from = 0, to = 1) int enable) {
         data = new byte[]{
                 (byte) 0xEA,
                 (byte) 0x01,
                 (byte) ParamsKeyEnum.KEY_SLOT_ADV_BEFORE_TRIGGER_ENABLE.getParamsKey(),
-                (byte) 0x01,
+                (byte) 0x02,
+                (byte) slot,
                 (byte) enable
         };
         response.responseValue = data;
@@ -548,8 +550,8 @@ public class ParamsTask extends OrderTask {
         int length = unixTimeBytes.length;
         data = new byte[length + 4];
         data[0] = (byte) 0xEA;
-        data[2] = 0x01;
-        data[1] = (byte) ParamsKeyEnum.KEY_SYSTEM_TIME.getParamsKey();
+        data[1] = 0x01;
+        data[2] = (byte) ParamsKeyEnum.KEY_SYSTEM_TIME.getParamsKey();
         data[3] = (byte) length;
         for (int i = 0; i < unixTimeBytes.length; i++) {
             data[i + 4] = unixTimeBytes[i];
@@ -562,8 +564,8 @@ public class ParamsTask extends OrderTask {
         int length = deviceIdBytes.length;
         data = new byte[4 + length];
         data[0] = (byte) 0xEA;
-        data[2] = 0x01;
-        data[1] = (byte) ParamsKeyEnum.KEY_DEVICE_ID.getParamsKey();
+        data[1] = 0x01;
+        data[2] = (byte) ParamsKeyEnum.KEY_DEVICE_ID.getParamsKey();
         data[3] = (byte) length;
         for (int i = 0; i < length; i++) {
             data[i + 4] = deviceIdBytes[i];
@@ -572,12 +574,12 @@ public class ParamsTask extends OrderTask {
     }
 
     public void setDeviceName(String deviceName) {
-        byte[] deviceNameBytes = MokoUtils.hex2bytes(deviceName);
+        byte[] deviceNameBytes = deviceName.getBytes();
         int length = deviceNameBytes.length;
         data = new byte[4 + length];
         data[0] = (byte) 0xEA;
-        data[2] = 0x01;
-        data[1] = (byte) ParamsKeyEnum.KEY_DEVICE_NAME.getParamsKey();
+        data[1] = 0x01;
+        data[2] = (byte) ParamsKeyEnum.KEY_DEVICE_NAME.getParamsKey();
         data[3] = (byte) length;
         for (int i = 0; i < length; i++) {
             data[i + 4] = deviceNameBytes[i];

@@ -144,7 +144,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -162,12 +162,12 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                     case KEY_SLOT_LED_NOTIFY_ALARM_PARAMS:
                                     case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
                                     case KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         break;
                                     case KEY_SLOT_TRIGGER_ALARM_NOTIFY_TYPE:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -188,6 +188,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                     case KEY_SLOT_TRIGGER_ALARM_NOTIFY_TYPE:
                                         if (length == 2 && value[4] == slotType) {
                                             notifyType = value[5] & 0xFF;
+                                            npvNotifyType.setValue(notifyType);
                                             if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
                                                 // LED/LED+Vibration/LED+Buzzer
                                                 clLedNotify.setVisibility(View.VISIBLE);
@@ -213,7 +214,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             etBlinkingTime.setText(String.valueOf(time));
-                                            etBlinkingInterval.setText(String.valueOf(interval));
+                                            etBlinkingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS:
@@ -221,7 +222,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             etVibratingTime.setText(String.valueOf(time));
-                                            etVibratingInterval.setText(String.valueOf(interval));
+                                            etVibratingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
@@ -229,7 +230,7 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             etRingingTime.setText(String.valueOf(time));
-                                            etRingingInterval.setText(String.valueOf(interval));
+                                            etRingingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                 }
@@ -287,11 +288,11 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
         String buzzerIntervalStr = etRingingInterval.getText().toString();
 
         int ledTime = Integer.parseInt(ledTimeStr);
-        int ledInterval = Integer.parseInt(ledIntervalStr);
+        int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
         int vibrationTime = Integer.parseInt(vibrationTimeStr);
-        int vibrationInterval = Integer.parseInt(vibrationIntervalStr);
+        int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
         int buzzerTime = Integer.parseInt(buzzerTimeStr);
-        int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
+        int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
 
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         if (notifyType == 1 || notifyType == 4 || notifyType == 5) {

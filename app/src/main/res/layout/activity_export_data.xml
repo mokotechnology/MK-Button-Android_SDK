@@ -92,7 +92,7 @@
             android:layout_marginLeft="50dp"
             android:layout_weight="1.0"
             android:clickable="true"
-            android:drawableTop="@drawable/ic_download"
+            android:drawableTop="@drawable/selector_download"
             android:enabled="false"
             android:gravity="center_horizontal"
             android:onClick="onExport"

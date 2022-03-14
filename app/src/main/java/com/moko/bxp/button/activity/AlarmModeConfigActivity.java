@@ -114,6 +114,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         }
         sbAdvRangeData.setOnSeekBarChangeListener(this);
         sbTxPower.setOnSeekBarChangeListener(this);
+        sbTriggerTxPower.setOnSeekBarChangeListener(this);
         EventBus.getDefault().register(this);
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
@@ -164,7 +165,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -182,12 +183,13 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                     case KEY_DEVICE_ID:
                                     case KEY_SLOT_PARAMS:
                                     case KEY_ABNORMAL_INACTIVITY_ALARM_STATIC_INTERVAL:
-                                        if (result != 0) {
+                                    case KEY_SLOT_ADV_BEFORE_TRIGGER_ENABLE:
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         break;
                                     case KEY_SLOT_TRIGGER_PARAMS:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -225,15 +227,15 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                         if (length == 8 && value[4] == slotType) {
                                             int triggerEnable = value[5] & 0xFF;
                                             triggerRssi = value[6];
-                                            int advInterval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
+                                            int triggerAdvInterval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             int txPower = value[9];
-                                            int triggerAdvInterval = MokoUtils.toInt(Arrays.copyOfRange(value, 10, 12));
+                                            int triggerAdvTime = MokoUtils.toInt(Arrays.copyOfRange(value, 10, 12));
                                             isTriggerOpen = triggerEnable == 1;
                                             ivAlarmMode.setImageResource(isTriggerOpen ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-                                            etAdvInterval.setText(String.valueOf(advInterval / 20));
+                                            etTriggerAdvInterval.setText(String.valueOf(triggerAdvInterval / 20));
                                             TxPowerEnum txPowerEnum = TxPowerEnum.fromTxPower(txPower);
                                             sbTriggerTxPower.setProgress(txPowerEnum.ordinal());
-                                            etTriggerAdvInterval.setText(String.valueOf(triggerAdvInterval));
+                                            etTriggerAdvTime.setText(String.valueOf(triggerAdvTime));
                                             llSlotTriggerParams.setVisibility(isTriggerOpen ? View.VISIBLE : View.GONE);
                                         }
                                         break;
@@ -311,11 +313,11 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         int advInterval = Integer.parseInt(advIntervalStr);
         int triggerAdvTime = Integer.parseInt(triggerAdvTimeStr);
         int triggerAdvInterval = Integer.parseInt(triggerAdvIntervalStr);
-        int abnormalInactivityTime = Integer.parseInt(abnormalInactivityTimeStr);
 
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.setDeviceId(deviceStr));
         if (slotType == 3) {
+            int abnormalInactivityTime = Integer.parseInt(abnormalInactivityTimeStr);
             orderTasks.add(OrderTaskAssembler.setAbnormalInactivityAlarmStaticInterval(abnormalInactivityTime));
         }
         orderTasks.add(OrderTaskAssembler.setSlotParams(
@@ -324,6 +326,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                 sbAdvRangeData.getProgress() - 100,
                 advInterval * 20,
                 TxPowerEnum.fromOrdinal(sbTxPower.getProgress()).getTxPower()));
+        orderTasks.add(OrderTaskAssembler.setSlotAdvBeforeTriggerEnable(slotType, isAdvBeforeTriggerOpen ? 1 : 0));
         orderTasks.add(OrderTaskAssembler.setSlotTriggerParams(
                 slotType,
                 isTriggerOpen ? 1 : 0,
@@ -422,7 +425,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         if (isWindowLocked())
             return;
         Intent intent = new Intent(this, AlarmNotifyTypeActivity.class);
-        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
+        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, slotType);
         startActivity(intent);
     }
 }

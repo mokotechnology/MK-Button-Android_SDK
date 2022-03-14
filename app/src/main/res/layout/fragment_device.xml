@@ -139,6 +139,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:hint="1-10 characters"
+            android:maxLength="10"
             android:textColor="@color/black_333333"
             android:textSize="15sp" />
     </RelativeLayout>

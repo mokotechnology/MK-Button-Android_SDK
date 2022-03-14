@@ -13,7 +13,6 @@ import com.moko.support.entity.DeviceInfo;
 import com.moko.support.entity.OrderServices;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import androidx.core.content.ContextCompat;

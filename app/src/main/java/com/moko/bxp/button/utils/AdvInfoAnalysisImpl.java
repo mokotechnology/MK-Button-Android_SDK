@@ -52,13 +52,9 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
         final Iterator iterator = map.keySet().iterator();
         while (iterator.hasNext()) {
             final ParcelUuid parcelUuid = (ParcelUuid) iterator.next();
-            byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_DEVICE.getUuid()));
-            if (data == null || data.length == 0)
-                continue;
-            dataStr = MokoUtils.bytesToHexString(data);
-            dataBytes = data;
             if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_DEVICE.getUuid())) {
-                if (data.length < 21)
+                byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_DEVICE.getUuid()));
+                if (data == null || data.length == 0 || data.length < 21)
                     continue;
                 deviceInfoFrame = data[0] & 0xFF;
                 accX = MokoUtils.toIntSigned(Arrays.copyOfRange(data, 4, 6));
@@ -71,13 +67,16 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
                 battery = MokoUtils.toInt(Arrays.copyOfRange(data, 13, 15));
             }
             if (parcelUuid.getUuid().equals(OrderServices.SERVICE_ADV_TRIGGER.getUuid())) {
-                if (data.length < 5)
+                byte[] data = map.get(new ParcelUuid(OrderServices.SERVICE_ADV_TRIGGER.getUuid()));
+                if (data == null || data.length == 0 || data.length < 5)
                     continue;
+                dataStr = MokoUtils.bytesToHexString(data);
+                dataBytes = data;
                 triggerTypeFrame = data[0] & 0xFF;
                 verifyEnable = (data[1] & 0x01) == 0x01 ? 1 : 0;
                 triggerStatus = (data[1] & 0x02) == 0x02 ? 1 : 0;
                 triggerCount = MokoUtils.toInt(Arrays.copyOfRange(data, 2, 4));
-                deviceId = String.format("0x%s", MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 4, data.length - 3)).toUpperCase());
+                deviceId = String.format("0x%s", MokoUtils.bytesToHexString(Arrays.copyOfRange(data, 4, data.length - 2)).toUpperCase());
                 deviceType = data[data.length - 2] & 0xFF;
             }
 
@@ -130,17 +129,16 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             advInfo.scanRecord = deviceInfo.scanRecord;
             advInfo.scanTime = SystemClock.elapsedRealtime();
             advInfo.triggerDataHashMap = new LinkedHashMap<>();
-            advInfo.triggerDataHashMap = new LinkedHashMap<>();
             beaconXInfoHashMap.put(deviceInfo.mac, advInfo);
         }
         if (triggerTypeFrame > 0) {
             AdvInfo.TriggerData triggerData = new AdvInfo.TriggerData();
             triggerData.dataStr = dataStr;
             triggerData.dataBytes = dataBytes;
-            triggerData.triggerType = deviceInfoFrame;
+            triggerData.triggerType = triggerTypeFrame;
             triggerData.triggerStatus = triggerStatus;
             triggerData.triggerCount = triggerCount;
-            advInfo.triggerDataHashMap.put(deviceInfoFrame, triggerData);
+            advInfo.triggerDataHashMap.put(triggerTypeFrame, triggerData);
         }
         if (deviceInfoFrame == 0) {
             advInfo.deviceInfoFrame = deviceInfoFrame;

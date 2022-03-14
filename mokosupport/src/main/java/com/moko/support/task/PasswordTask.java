@@ -38,8 +38,8 @@ public class PasswordTask extends OrderTask {
         int length = passwordBytes.length;
         data = new byte[4 + length];
         data[0] = (byte) 0xEA;
-        data[2] = 0x01;
-        data[1] = (byte) ParamsKeyEnum.KEY_PASSWORD.getParamsKey();
+        data[1] = 0x01;
+        data[2] = (byte) ParamsKeyEnum.KEY_PASSWORD.getParamsKey();
         data[3] = (byte) length;
         for (int i = 0; i < length; i++) {
             data[i + 4] = passwordBytes[i];
@@ -52,8 +52,8 @@ public class PasswordTask extends OrderTask {
         int length = passwordBytes.length;
         data = new byte[4 + length];
         data[0] = (byte) 0xEA;
-        data[2] = 0x01;
-        data[1] = (byte) ParamsKeyEnum.KEY_MODIFY_PASSWORD.getParamsKey();
+        data[1] = 0x01;
+        data[2] = (byte) ParamsKeyEnum.KEY_MODIFY_PASSWORD.getParamsKey();
         data[3] = (byte) length;
         for (int i = 0; i < length; i++) {
             data[i + 4] = passwordBytes[i];

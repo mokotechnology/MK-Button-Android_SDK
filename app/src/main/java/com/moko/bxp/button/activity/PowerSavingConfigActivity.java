@@ -94,7 +94,7 @@ public class PowerSavingConfigActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -110,11 +110,12 @@ public class PowerSavingConfigActivity extends BaseActivity {
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_POWER_SAVING_STATIC_TRIGGER_TIME:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
+                                        break;
                                     case KEY_POWER_SAVING_ENABLE:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -140,7 +141,7 @@ public class PowerSavingConfigActivity extends BaseActivity {
                                         }
                                         break;
                                     case KEY_POWER_SAVING_STATIC_TRIGGER_TIME:
-                                        if (length == 4) {
+                                        if (length == 2) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             etStaticTriggerTime.setText(String.valueOf(time));
                                         }
@@ -182,8 +183,8 @@ public class PowerSavingConfigActivity extends BaseActivity {
             String timeStr = etStaticTriggerTime.getText().toString();
             int time = Integer.parseInt(timeStr);
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
-            orderTasks.add(OrderTaskAssembler.setPowerSavingEnable(isEnable ? 1 : 0));
             orderTasks.add(OrderTaskAssembler.setPowerSavingStaticTriggerTime(time));
+            orderTasks.add(OrderTaskAssembler.setPowerSavingEnable(isEnable ? 1 : 0));
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         } else {
             ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");

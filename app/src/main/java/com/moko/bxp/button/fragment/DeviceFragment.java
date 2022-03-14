@@ -54,6 +54,9 @@ public class DeviceFragment extends Fragment {
         String deviceNameStr = etDeviceName.getText().toString();
         if (TextUtils.isEmpty(deviceNameStr))
             return false;
+        int length = deviceNameStr.length();
+        if (length < 1 || length > 10)
+            return false;
         return true;
     }
 

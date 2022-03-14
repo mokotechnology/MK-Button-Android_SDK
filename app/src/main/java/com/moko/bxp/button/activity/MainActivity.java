@@ -170,16 +170,17 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (MokoConstants.ACTION_DISCOVER_SUCCESS.equals(action)) {
             // 设备连接成功，通知页面更新
             dismissLoadingProgressDialog();
-            showLoadingMessageDialog();
-            mHandler.postDelayed(() -> {
-                if (TextUtils.isEmpty(mPassword)) {
-
-                } else {
+            if (TextUtils.isEmpty(mPassword)) {
+                Intent i = new Intent(this, DeviceInfoActivity.class);
+                startActivityForResult(i, AppConstants.REQUEST_CODE_DEVICE_INFO);
+            } else {
+                showLoadingMessageDialog();
+                mHandler.postDelayed(() -> {
                     ArrayList<OrderTask> orderTasks = new ArrayList<>();
                     orderTasks.add(OrderTaskAssembler.setPassword(mPassword));
                     MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
-                }
-            }, 500);
+                }, 500);
+            }
 
         }
     }
@@ -198,7 +199,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             byte[] value = response.responseValue;
             switch (orderCHAR) {
                 case CHAR_PASSWORD:
-                    if (value.length == 4) {
+                    if (value.length == 5) {
                         int header = value[0] & 0xFF;// 0xEB
                         int flag = value[1] & 0xFF;// read or write
                         int cmd = value[2] & 0xFF;
@@ -214,7 +215,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                             int result = value[4] & 0xFF;
                             switch (configKeyEnum) {
                                 case KEY_PASSWORD:
-                                    if (result == 0) {
+                                    if (result == 0xAA) {
                                         mSavedPassword = mPassword;
                                         SPUtiles.setStringValue(this, AppConstants.SP_KEY_SAVED_PASSWORD, mSavedPassword);
                                         XLog.i("Success");

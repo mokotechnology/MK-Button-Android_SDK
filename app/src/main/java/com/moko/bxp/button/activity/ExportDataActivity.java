@@ -3,7 +3,6 @@ package com.moko.bxp.button.activity;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -66,6 +65,7 @@ public class ExportDataActivity extends BaseActivity {
     private ExportDataListAdapter adapter;
     private SimpleDateFormat sdf;
     private TimeZone timeZone;
+    private boolean mIsShown;
 
 
     public int slotType;
@@ -125,6 +125,7 @@ public class ExportDataActivity extends BaseActivity {
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
+                    // eb0201090000017f87a9be8b
                     case CHAR_SINGLE_TRIGGER:
                     case CHAR_DOUBLE_TRIGGER:
                     case CHAR_LONG_TRIGGER:
@@ -135,8 +136,12 @@ public class ExportDataActivity extends BaseActivity {
                             return;
                         int length = value[3] & 0xFF;
                         if (flag == 0x02 && cmd == (slotType + 1) && length == 0x09) {
+                            if (!mIsShown) {
+                                mIsShown = true;
+                                tvExport.setEnabled(true);
+                            }
                             ExportData exportData = new ExportData();
-                            byte[] timeBytes = Arrays.copyOfRange(value, 4, 4 + 8);
+                            byte[] timeBytes = Arrays.copyOfRange(value, 4, 12);
                             ByteBuffer byteBuffer = ByteBuffer.allocate(Long.SIZE / Byte.SIZE).put(timeBytes, 0, timeBytes.length);
                             byteBuffer.flip();
                             long time = byteBuffer.getLong();
@@ -205,21 +210,15 @@ public class ExportDataActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            back();
-            return false;
-        }
-        return super.onKeyDown(keyCode, event);
+    public void onBackPressed() {
+        back();
     }
-
 
     public void onSync(View view) {
         if (isWindowLocked())
             return;
         if (!mIsSync) {
             mIsSync = true;
-            tvExport.setEnabled(false);
             Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
             ivSync.startAnimation(animation);
             tvSync.setText("Stop");
@@ -234,9 +233,6 @@ public class ExportDataActivity extends BaseActivity {
             }
         } else {
             mIsSync = false;
-            if (exportDatas != null && exportDatas.size() > 0 && storeString != null) {
-                tvExport.setEnabled(true);
-            }
             ivSync.clearAnimation();
             tvSync.setText("Sync");
             if (slotType == 0) {
@@ -254,6 +250,8 @@ public class ExportDataActivity extends BaseActivity {
     public void onEmpty(View view) {
         if (isWindowLocked())
             return;
+        storeString = new StringBuilder();
+        tvExport.setEnabled(false);
         exportDatas.clear();
         adapter.replaceData(exportDatas);
     }

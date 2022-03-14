@@ -8,13 +8,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
@@ -140,7 +138,7 @@ public class AccDataActivity extends BaseActivity{
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -156,7 +154,7 @@ public class AccDataActivity extends BaseActivity{
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
                                     case KEY_AXIS_PARAMS:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -178,18 +176,18 @@ public class AccDataActivity extends BaseActivity{
                                         if (length == 4) {
                                             mSelectedRate = value[4] & 0xFF;
                                             mSelectedScale = value[5] & 0xFF;
-                                            int threshold = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 7));
+                                            int threshold = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             tvAxisDataRate.setText(axisDataRates.get(mSelectedRate));
                                             tvAxisScale.setText(axisScales.get(mSelectedScale));
                                             etMotionThreshold.setText(String.valueOf(threshold));
                                             if (mSelectedScale == 0) {
-                                                tvMotionThresholdUnit.setText("1mg");
+                                                tvMotionThresholdUnit.setText("x1mg");
                                             } else if (mSelectedScale == 1) {
-                                                tvMotionThresholdUnit.setText("2mg");
+                                                tvMotionThresholdUnit.setText("x2mg");
                                             } else if (mSelectedScale == 2) {
-                                                tvMotionThresholdUnit.setText("4mg");
+                                                tvMotionThresholdUnit.setText("x4mg");
                                             } else if (mSelectedScale == 3) {
-                                                tvMotionThresholdUnit.setText("8mg");
+                                                tvMotionThresholdUnit.setText("x8mg");
                                             }
                                         }
                                         break;
@@ -321,6 +319,15 @@ public class AccDataActivity extends BaseActivity{
         scaleDialog.setDatas(axisScales, mSelectedScale);
         scaleDialog.setListener(value -> {
             mSelectedScale = value;
+            if (mSelectedScale == 0) {
+                tvMotionThresholdUnit.setText("x1mg");
+            } else if (mSelectedScale == 1) {
+                tvMotionThresholdUnit.setText("x2mg");
+            } else if (mSelectedScale == 2) {
+                tvMotionThresholdUnit.setText("x4mg");
+            } else if (mSelectedScale == 3) {
+                tvMotionThresholdUnit.setText("x8mg");
+            }
             tvAxisScale.setText(axisScales.get(value));
         });
         scaleDialog.show(getSupportFragmentManager());

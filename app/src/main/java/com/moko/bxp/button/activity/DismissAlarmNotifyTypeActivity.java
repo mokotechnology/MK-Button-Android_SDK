@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -12,7 +11,6 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.button.AppConstants;
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
@@ -109,7 +107,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
     }
 
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onConnectStatusEvent(ConnectStatusEvent event) {
         final String action = event.getAction();
         runOnUiThread(new Runnable() {
@@ -123,7 +121,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
         });
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING, priority = 300)
+    @Subscribe(threadMode = ThreadMode.POSTING, priority = 200)
     public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
         EventBus.getDefault().cancelEventDelivery(event);
         final String action = event.getAction();
@@ -140,7 +138,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_PARAMS:
-                        if (value.length == 4) {
+                        if (value.length > 4) {
                             int header = value[0] & 0xFF;// 0xEB
                             int flag = value[1] & 0xFF;// read or write
                             int cmd = value[2] & 0xFF;
@@ -158,13 +156,13 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                     case KEY_DISMISS_LED_NOTIFY_ALARM_PARAMS:
                                     case KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS:
                                     case KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         break;
                                     case KEY_DISMISS_ALARM_TYPE:
                                     case KEY_DISMISS_ALARM:
-                                        if (result != 0) {
+                                        if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
@@ -185,6 +183,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                     case KEY_DISMISS_ALARM_TYPE:
                                         if (length == 1) {
                                             notifyType = value[4] & 0xFF;
+                                            npvNotifyType.setValue(notifyType);
                                             if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
                                                 // LED/LED+Vibration/LED+Buzzer
                                                 clLedNotify.setVisibility(View.VISIBLE);
@@ -210,7 +209,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             etBlinkingTime.setText(String.valueOf(time));
-                                            etBlinkingInterval.setText(String.valueOf(interval));
+                                            etBlinkingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS:
@@ -218,15 +217,15 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             etVibratingTime.setText(String.valueOf(time));
-                                            etVibratingInterval.setText(String.valueOf(interval));
+                                            etVibratingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS:
                                         if (length == 4) {
-                                            int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 7));
+                                            int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
                                             etRingingTime.setText(String.valueOf(time));
-                                            etRingingInterval.setText(String.valueOf(interval));
+                                            etRingingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                 }
@@ -291,11 +290,11 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
         String buzzerIntervalStr = etRingingInterval.getText().toString();
 
         int ledTime = Integer.parseInt(ledTimeStr);
-        int ledInterval = Integer.parseInt(ledIntervalStr);
+        int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
         int vibrationTime = Integer.parseInt(vibrationTimeStr);
-        int vibrationInterval = Integer.parseInt(vibrationIntervalStr);
+        int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
         int buzzerTime = Integer.parseInt(buzzerTimeStr);
-        int buzzerInterval = Integer.parseInt(buzzerIntervalStr);
+        int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
 
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         if (notifyType == 1 || notifyType == 4 || notifyType == 5) {

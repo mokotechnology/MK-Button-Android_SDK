@@ -29,9 +29,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="Alarm notification type"
+            android:text="Alarm event"
             android:textColor="@color/white_ffffff"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_save"
@@ -120,46 +121,49 @@
 
                 <TextView
                     android:id="@+id/tv_single_press_event_count"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_export_single_press_event"
+                    app:layout_constraintRight_toRightOf="@id/tv_export_single_press_event"
                     app:layout_constraintTop_toBottomOf="@id/alarm_event" />
 
                 <TextView
                     android:id="@+id/tv_check_single_press_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onCheckSinglePressEvent"
                     android:text="Check"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
                     app:layout_constraintBaseline_toBaselineOf="@id/tv_single_press_event_count"
-                    app:layout_constraintRight_toLeftOf="@id/tv_single_press_event_count" />
+                    app:layout_constraintRight_toLeftOf="@id/tv_export_single_press_event" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onClearSinglePressEvent"
                     android:text="Clear"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_check_single_press_event"
+                    app:layout_constraintRight_toLeftOf="@id/tv_export_single_press_event"
                     app:layout_constraintTop_toBottomOf="@id/tv_check_single_press_event" />
 
                 <TextView
@@ -171,13 +175,13 @@
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onExportSinglePressEvent"
                     android:text="Export"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toRightOf="@id/tv_check_single_press_event"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_check_single_press_event" />
 
                 <TextView
@@ -206,39 +210,42 @@
                     android:text="0"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_export_single_press_event"
+                    app:layout_constraintRight_toRightOf="@id/tv_export_single_press_event"
                     app:layout_constraintTop_toBottomOf="@id/tv_export_single_press_event" />
 
                 <TextView
                     android:id="@+id/tv_check_double_press_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onCheckDoublePressEvent"
                     android:text="Check"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
                     app:layout_constraintBaseline_toBaselineOf="@id/tv_double_press_event_count"
-                    app:layout_constraintRight_toLeftOf="@id/tv_double_press_event_count" />
+                    app:layout_constraintRight_toLeftOf="@id/tv_export_double_press_event" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onClearDoublePressEvent"
                     android:text="Clear"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_check_double_press_event"
+                    app:layout_constraintRight_toLeftOf="@id/tv_export_double_press_event"
                     app:layout_constraintTop_toBottomOf="@id/tv_check_double_press_event" />
 
                 <TextView
@@ -250,13 +257,13 @@
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onExportDoublePressEvent"
                     android:text="Export"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toRightOf="@id/tv_check_double_press_event"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_check_double_press_event" />
 
                 <TextView
@@ -285,39 +292,42 @@
                     android:text="0"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toLeftOf="@id/tv_export_long_press_event"
+                    app:layout_constraintRight_toRightOf="@id/tv_export_long_press_event"
                     app:layout_constraintTop_toBottomOf="@id/tv_export_double_press_event" />
 
                 <TextView
                     android:id="@+id/tv_check_long_press_event"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onCheckLongPressEvent"
                     android:text="Check"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
                     app:layout_constraintBaseline_toBaselineOf="@id/tv_long_press_event_count"
-                    app:layout_constraintRight_toLeftOf="@id/tv_long_press_event_count" />
+                    app:layout_constraintRight_toLeftOf="@id/tv_export_long_press_event" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onClearLongPressEvent"
                     android:text="Clear"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_check_long_press_event"
+                    app:layout_constraintRight_toLeftOf="@id/tv_export_long_press_event"
                     app:layout_constraintTop_toBottomOf="@id/tv_check_long_press_event" />
 
                 <TextView
@@ -329,13 +339,13 @@
                     android:background="@drawable/shape_radius_blue_btn_bg"
                     android:clickable="true"
                     android:gravity="center"
-                    android:minWidth="70dp"
+                    android:minWidth="60dp"
                     android:minHeight="30dp"
                     android:onClick="onExportLongPressEvent"
                     android:text="Export"
                     android:textColor="@color/white_ffffff"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toRightOf="@id/tv_check_long_press_event"
+                    app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/tv_check_long_press_event" />
 
                 <TextView

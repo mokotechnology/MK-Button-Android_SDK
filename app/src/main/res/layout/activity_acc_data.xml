@@ -31,7 +31,8 @@
             android:layout_centerInParent="true"
             android:text="3-axis accelerometer"
             android:textColor="@color/white_ffffff"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_save"

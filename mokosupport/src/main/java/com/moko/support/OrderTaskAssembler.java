@@ -103,8 +103,8 @@ public class OrderTaskAssembler {
     }
 
     public static OrderTask getVerifyPasswordEnable() {
-        ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_VERIFY_PASSWORD_ENABLE);
+        PasswordTask task = new PasswordTask();
+        task.setData(ParamsKeyEnum.KEY_VERIFY_PASSWORD_ENABLE);
         return task;
     }
 
@@ -119,6 +119,7 @@ public class OrderTaskAssembler {
         task.setPassword(password);
         return task;
     }
+
     public static OrderTask setNewPassword(String password) {
         PasswordTask task = new PasswordTask();
         task.setNewPassword(password);
@@ -233,7 +234,7 @@ public class OrderTaskAssembler {
      */
     public static OrderTask setDefault() {
         ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DEFAULT);
+        task.setData(ParamsKeyEnum.KEY_DEFAULT);
         return task;
     }
 
@@ -242,33 +243,27 @@ public class OrderTaskAssembler {
      */
     public static OrderTask resetDevice() {
         ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_RESET);
+        task.setData(ParamsKeyEnum.KEY_RESET);
         return task;
     }
 
     public static OrderTask setSinglePressEventClear() {
         ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_SINGLE_PRESS_EVENT_CLEAR);
+        task.setData(ParamsKeyEnum.KEY_SINGLE_PRESS_EVENT_CLEAR);
         return task;
     }
 
     public static OrderTask setDoublePressEventClear() {
         ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_DOUBLE_PRESS_EVENT_CLEAR);
+        task.setData(ParamsKeyEnum.KEY_DOUBLE_PRESS_EVENT_CLEAR);
         return task;
     }
 
     public static OrderTask setLongPressEventClear() {
         ParamsTask task = new ParamsTask();
-        task.getData(ParamsKeyEnum.KEY_LONG_PRESS_EVENT_CLEAR);
+        task.setData(ParamsKeyEnum.KEY_LONG_PRESS_EVENT_CLEAR);
         return task;
     }
-
-//    public static OrderTask getSlotActive() {
-//        ParamsTask task = new ParamsTask();
-//        task.getData(ParamsKeyEnum.KEY_SLOT_ACTIVE);
-//        return task;
-//    }
 
     public static OrderTask getSlotParams(@IntRange(from = 0, to = 3) int slot) {
         ParamsTask task = new ParamsTask();
@@ -309,9 +304,10 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask setSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 1) int enable) {
+    public static OrderTask setSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 3) int slot,
+                                                          @IntRange(from = 0, to = 1) int enable) {
         ParamsTask task = new ParamsTask();
-        task.setSlotAdvBeforeTriggerEnable(enable);
+        task.setSlotAdvBeforeTriggerEnable(slot, enable);
         return task;
     }
 

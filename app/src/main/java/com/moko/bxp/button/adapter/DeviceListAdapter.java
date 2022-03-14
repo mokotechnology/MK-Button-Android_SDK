@@ -29,10 +29,10 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
         helper.setText(R.id.tv_battery, item.battery < 0 ? "N/A" : String.format("%dmV", item.battery));
         helper.addOnClickListener(R.id.tv_connect);
         helper.setGone(R.id.tv_connect, item.connectState > 0);
-        helper.setText(R.id.tv_device_id, item.deviceId);
+        helper.setText(R.id.tv_device_id, String.format("Device ID:%s", item.deviceId));
         helper.setVisible(R.id.tv_tx_power, item.txPower != Integer.MIN_VALUE);
         helper.setText(R.id.tv_tx_power, String.format("Tx power:%ddBm", item.txPower));
-        LinearLayout parent = helper.getView(R.id.ll_data);
+        LinearLayout parent = helper.getView(R.id.ll_adv_info);
         parent.removeAllViews();
         Iterator<Integer> iterator = item.triggerDataHashMap.keySet().iterator();
         while (iterator.hasNext()) {
@@ -57,7 +57,7 @@ public class DeviceListAdapter extends BaseQuickAdapter<AdvInfo, BaseViewHolder>
             TextView tvTriggerType = view.findViewById(R.id.tv_trigger_type);
             TextView tvTriggerStatus = view.findViewById(R.id.tv_trigger_status);
             TextView tvTriggerCount = view.findViewById(R.id.tv_trigger_count);
-            TextView rlTriggerCount = view.findViewById(R.id.rl_trigger_count);
+            RelativeLayout rlTriggerCount = view.findViewById(R.id.rl_trigger_count);
             tvTriggerType.setText(triggerTypeStr);
             tvTriggerStatus.setText(triggerData.triggerStatus == 0 ? "Standby" : "Triggered");
             tvTriggerCount.setText(String.valueOf(triggerData.triggerCount));
