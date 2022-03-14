@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import androidx.core.content.FileProvider;
 
@@ -58,7 +59,9 @@ public class Utils {
         if (files.length == 1) {
             intent = new Intent(Intent.ACTION_SEND);
             Uri uri;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                uri = IOUtils.insertDownloadFile(context, files[0]);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 uri = FileProvider.getUriForFile(context, "com.moko.bxp.button.fileprovider", files[0]);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             } else {
@@ -67,12 +70,16 @@ public class Utils {
             intent.putExtra(Intent.EXTRA_STREAM, uri);
             intent.putExtra(Intent.EXTRA_TEXT, body);
         } else {
-            intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             ArrayList<Uri> uris = new ArrayList<>();
             for (int i = 0; i < files.length; i++) {
-                Uri uri = Uri.fromFile(files[i]);
-                uris.add(uri);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                    Uri fileUri = IOUtils.insertDownloadFile(context, files[i]);
+                    uris.add(fileUri);
+                } else {
+                    uris.add(Uri.fromFile(files[i]));
+                }
             }
+            intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
             ArrayList<CharSequence> charSequences = new ArrayList<>();
             charSequences.add(body);
@@ -127,6 +134,21 @@ public class Utils {
      */
     public static String calendar2strDate(Calendar calendar, String pattern) {
         SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.US);
+        return sdf.format(calendar.getTime());
+    }
+
+    public static Calendar getCalenderFromTime(long time) {
+        Calendar calendar = Calendar.getInstance();
+        TimeZone timeZone = TimeZone.getTimeZone("GMT");
+        calendar.setTimeZone(timeZone);
+        calendar.setTimeInMillis(time);
+        return calendar;
+    }
+
+    public static String calendar2strDateGMT(Calendar calendar, String pattern) {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.US);
+        TimeZone timeZone = TimeZone.getTimeZone("GMT");
+        sdf.setTimeZone(timeZone);
         return sdf.format(calendar.getTime());
     }
 }

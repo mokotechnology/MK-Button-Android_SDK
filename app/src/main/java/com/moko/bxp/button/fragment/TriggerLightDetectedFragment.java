@@ -15,7 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.activity.SlotDataActivity;
+import com.moko.bxp.button.activity.AlarmModeConfigActivity;
 import com.moko.bxp.button.utils.ToastUtils;
 
 import butterknife.BindView;
@@ -42,7 +42,7 @@ public class TriggerLightDetectedFragment extends Fragment implements RadioGroup
     EditText etStop;
 
 
-    private SlotDataActivity activity;
+    private AlarmModeConfigActivity activity;
 
 
     public TriggerLightDetectedFragment() {
@@ -65,7 +65,7 @@ public class TriggerLightDetectedFragment extends Fragment implements RadioGroup
         Log.i(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_trigger_light, container, false);
         ButterKnife.bind(this, view);
-        activity = (SlotDataActivity) getActivity();
+        activity = (AlarmModeConfigActivity) getActivity();
         tvTriggerTips.setText(getString(R.string.trigger_light_detected_tips_1));
         if (mIsAlways) {
             rbAlwaysStart.setChecked(true);

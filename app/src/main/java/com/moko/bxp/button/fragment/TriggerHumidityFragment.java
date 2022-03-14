@@ -12,7 +12,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.activity.SlotDataActivity;
+import com.moko.bxp.button.activity.AlarmModeConfigActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +37,7 @@ public class TriggerHumidityFragment extends Fragment implements SeekBar.OnSeekB
 //    TextView triggerHumidiy;
 
 
-    private SlotDataActivity activity;
+    private AlarmModeConfigActivity activity;
 
 
     public TriggerHumidityFragment() {
@@ -60,7 +60,7 @@ public class TriggerHumidityFragment extends Fragment implements SeekBar.OnSeekB
         Log.i(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_trigger_humidity, container, false);
         ButterKnife.bind(this, view);
-        activity = (SlotDataActivity) getActivity();
+        activity = (AlarmModeConfigActivity) getActivity();
         rgAdvertising.setOnCheckedChangeListener(this);
         sbTriggerHumidity.setOnSeekBarChangeListener(this);
         if (mIsStart) {

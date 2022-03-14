@@ -15,7 +15,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.able.ISlotDataAction;
-import com.moko.bxp.button.activity.SlotDataActivity;
+import com.moko.bxp.button.activity.AlarmModeConfigActivity;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
@@ -39,7 +39,7 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     @BindView(R.id.et_adv_interval)
     EditText etAdvInterval;
 
-    private SlotDataActivity activity;
+    private AlarmModeConfigActivity activity;
 
     public TlmFragment() {
     }
@@ -61,28 +61,28 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
         Log.i(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_tlm, container, false);
         ButterKnife.bind(this, view);
-        activity = (SlotDataActivity) getActivity();
+        activity = (AlarmModeConfigActivity) getActivity();
         sbTxPower.setOnSeekBarChangeListener(this);
         setDefault();
         return view;
     }
 
     private void setDefault() {
-        if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.NO_DATA) {
-            etAdvInterval.setText("10");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            sbTxPower.setProgress(6);
-        } else {
-            int advIntervalProgress = activity.slotData.advInterval / 100;
-            etAdvInterval.setText(advIntervalProgress + "");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
-
-            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
-            txPowerBytes = MokoUtils.toByteArray(activity.slotData.txPower, 1);
-            tvTxPower.setText(String.format("%ddBm", activity.slotData.txPower));
-        }
+//        if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.NO_DATA) {
+//            etAdvInterval.setText("10");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            sbTxPower.setProgress(6);
+//        } else {
+//            int advIntervalProgress = activity.slotData.advInterval / 100;
+//            etAdvInterval.setText(advIntervalProgress + "");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
+//
+//            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
+//            sbTxPower.setProgress(txPowerProgress);
+//            txPowerBytes = MokoUtils.toByteArray(activity.slotData.txPower, 1);
+//            tvTxPower.setText(String.format("%ddBm", activity.slotData.txPower));
+//        }
     }
 
     @Override
@@ -148,30 +148,30 @@ public class TlmFragment extends Fragment implements SeekBar.OnSeekBarChangeList
 
     @Override
     public void sendData() {
-        byte[] tlmBytes = MokoUtils.hex2bytes(SlotFrameTypeEnum.TLM.getFrameType());
-        // 切换通道，保证通道是在当前设置通道里
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setSlot(activity.slotData.slotEnum));
-        orderTasks.add(OrderTaskAssembler.setSlotData(tlmBytes));
-        orderTasks.add(OrderTaskAssembler.setRadioTxPower(txPowerBytes));
-        orderTasks.add(OrderTaskAssembler.setAdvInterval(advIntervalBytes));
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+//        byte[] tlmBytes = MokoUtils.hex2bytes(SlotFrameTypeEnum.TLM.getFrameType());
+//        // 切换通道，保证通道是在当前设置通道里
+//        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+//        orderTasks.add(OrderTaskAssembler.setSlot(activity.slotData.slotEnum));
+//        orderTasks.add(OrderTaskAssembler.setSlotData(tlmBytes));
+//        orderTasks.add(OrderTaskAssembler.setRadioTxPower(txPowerBytes));
+//        orderTasks.add(OrderTaskAssembler.setAdvInterval(advIntervalBytes));
+//        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     @Override
     public void resetParams() {
-        if (activity.slotData.frameTypeEnum == activity.currentFrameTypeEnum) {
-            int advIntervalProgress = activity.slotData.advInterval / 100;
-            etAdvInterval.setText(advIntervalProgress + "");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
-
-            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
-        } else {
-            etAdvInterval.setText("10");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            sbTxPower.setProgress(6);
-        }
+//        if (activity.slotData.frameTypeEnum == activity.currentFrameTypeEnum) {
+//            int advIntervalProgress = activity.slotData.advInterval / 100;
+//            etAdvInterval.setText(advIntervalProgress + "");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
+//
+//            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
+//            sbTxPower.setProgress(txPowerProgress);
+//        } else {
+//            etAdvInterval.setText("10");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            sbTxPower.setProgress(6);
+//        }
     }
 }

@@ -127,7 +127,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:background="@drawable/slot_item_bg"
+                android:background="@drawable/shape_radius_white_bg"
                 android:orientation="vertical"
                 android:padding="12dp">
 
@@ -138,7 +138,7 @@
                     android:gravity="center"
                     android:text="Sensor parameters"
                     android:textColor="@color/black_333333"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -169,8 +169,6 @@
                     android:text="±2g"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintHorizontal_bias="0.6"
-                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -200,49 +198,43 @@
                     android:text="25Hz"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintLeft_toLeftOf="@id/tv_axis_scale"
+                    app:layout_constraintRight_toRightOf="@id/tv_axis_scale"
                     app:layout_constraintTop_toBottomOf="@id/tv_axis_scale" />
 
-
-                <RelativeLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_axis_data_rate">
+                    android:text="Motion threshold"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp"
+                    app:layout_constraintBaseline_toBaselineOf="@id/et_motion_threshold"
+                    app:layout_constraintLeft_toLeftOf="parent" />
 
-                    <TextView
-                        android:id="@+id/trigger_sensitivity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Motion threshold"
-                        android:textColor="@color/black_333333"
-                        android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/motion_threshold_unit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="x1mg"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp"
+                    app:layout_constraintBaseline_toBaselineOf="@id/et_motion_threshold"
+                    app:layout_constraintRight_toRightOf="parent" />
 
-                    <SeekBar
-                        android:id="@+id/sb_trigger_sensitivity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/trigger_sensitivity"
-                        android:layout_marginTop="10dp"
-                        android:layout_toLeftOf="@+id/tv_trigger_sensitivity"
-                        android:max="159"
-                        android:progress="0" />
-
-                    <TextView
-                        android:id="@id/tv_trigger_sensitivity"
-                        android:layout_width="70dp"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/trigger_sensitivity"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginTop="15dp"
-                        android:gravity="right"
-                        android:text="0.1g"
-                        android:textColor="@color/grey_666666"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-                </RelativeLayout>
+                <EditText
+                    android:id="@+id/et_motion_threshold"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="5dp"
+                    android:gravity="center"
+                    android:hint="1~2048"
+                    android:inputType="number"
+                    android:maxLength="4"
+                    android:singleLine="true"
+                    android:textColor="@color/black_333333"
+                    android:textSize="15sp"
+                    app:layout_constraintRight_toLeftOf="@id/motion_threshold_unit"
+                    app:layout_constraintTop_toBottomOf="@id/tv_axis_data_rate" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

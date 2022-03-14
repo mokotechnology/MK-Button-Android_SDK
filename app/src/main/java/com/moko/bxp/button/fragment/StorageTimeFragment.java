@@ -91,7 +91,7 @@ public class StorageTimeFragment extends Fragment {
             mSelected = value;
             tvStorageTimeOnly.setText(mDatas.get(value));
             tvTimeTips.setText(getString(R.string.time_only_tips, mSelected + 1));
-            activity.setSelectedTime(mSelected + 1);
+//            activity.setSelectedTime(mSelected + 1);
         });
         dialog.show(activity.getSupportFragmentManager());
     }

@@ -17,7 +17,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.able.ISlotDataAction;
-import com.moko.bxp.button.activity.SlotDataActivity;
+import com.moko.bxp.button.activity.AlarmModeConfigActivity;
 import com.moko.bxp.button.dialog.UrlSchemeDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -52,7 +52,7 @@ public class UrlFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     EditText etAdvInterval;
 
 
-    private SlotDataActivity activity;
+    private AlarmModeConfigActivity activity;
 
     public UrlFragment() {
     }
@@ -74,7 +74,7 @@ public class UrlFragment extends Fragment implements SeekBar.OnSeekBarChangeList
         Log.i(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_url, container, false);
         ButterKnife.bind(this, view);
-        activity = (SlotDataActivity) getActivity();
+        activity = (AlarmModeConfigActivity) getActivity();
         sbRssi.setOnSeekBarChangeListener(this);
         sbTxPower.setOnSeekBarChangeListener(this);
         InputFilter filter = new InputFilter() {
@@ -93,49 +93,49 @@ public class UrlFragment extends Fragment implements SeekBar.OnSeekBarChangeList
     }
 
     private void setDefault() {
-        if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.NO_DATA) {
-            etAdvInterval.setText("10");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            sbRssi.setProgress(100);
-            sbTxPower.setProgress(6);
-        } else {
-            int advIntervalProgress = activity.slotData.advInterval / 100;
-            etAdvInterval.setText(advIntervalProgress + "");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
-
-            if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.TLM) {
-                sbRssi.setProgress(100);
-                advTxPowerBytes = MokoUtils.toByteArray(0, 1);
-                tvRssi.setText(String.format("%ddBm", 0));
-            } else {
-                int advTxPowerProgress = activity.slotData.rssi_0m + 100;
-                sbRssi.setProgress(advTxPowerProgress);
-                advTxPowerBytes = MokoUtils.toByteArray(activity.slotData.rssi_0m, 1);
-                tvRssi.setText(String.format("%ddBm", activity.slotData.rssi_0m));
-            }
-
-            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
-            txPowerBytes = MokoUtils.toByteArray(activity.slotData.txPower, 1);
-            tvTxPower.setText(String.format("%ddBm", activity.slotData.txPower));
-        }
-        mUrlSchemeHex = MokoUtils.int2HexString(UrlSchemeEnum.HTTP_WWW.getUrlType());
-        tvUrlScheme.setText(UrlSchemeEnum.HTTP_WWW.getUrlDesc());
-        if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.URL) {
-            mUrlSchemeHex = MokoUtils.int2HexString(activity.slotData.urlSchemeEnum.getUrlType());
-            tvUrlScheme.setText(activity.slotData.urlSchemeEnum.getUrlDesc());
-            String url = activity.slotData.urlContent;
-            String urlExpansionStr = url.substring(url.length() - 2);
-            int urlExpansionType = Integer.parseInt(urlExpansionStr, 16);
-            UrlExpansionEnum urlEnum = UrlExpansionEnum.fromUrlExpanType(urlExpansionType);
-            if (urlEnum == null) {
-                etUrl.setText(MokoUtils.hex2String(url));
-            } else {
-                etUrl.setText(MokoUtils.hex2String(url.substring(0, url.length() - 2)) + urlEnum.getUrlExpanDesc());
-            }
-            etUrl.setSelection(etUrl.getText().toString().length());
-        }
+//        if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.NO_DATA) {
+//            etAdvInterval.setText("10");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            sbRssi.setProgress(100);
+//            sbTxPower.setProgress(6);
+//        } else {
+//            int advIntervalProgress = activity.slotData.advInterval / 100;
+//            etAdvInterval.setText(advIntervalProgress + "");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
+//
+//            if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.TLM) {
+//                sbRssi.setProgress(100);
+//                advTxPowerBytes = MokoUtils.toByteArray(0, 1);
+//                tvRssi.setText(String.format("%ddBm", 0));
+//            } else {
+//                int advTxPowerProgress = activity.slotData.rssi_0m + 100;
+//                sbRssi.setProgress(advTxPowerProgress);
+//                advTxPowerBytes = MokoUtils.toByteArray(activity.slotData.rssi_0m, 1);
+//                tvRssi.setText(String.format("%ddBm", activity.slotData.rssi_0m));
+//            }
+//
+//            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
+//            sbTxPower.setProgress(txPowerProgress);
+//            txPowerBytes = MokoUtils.toByteArray(activity.slotData.txPower, 1);
+//            tvTxPower.setText(String.format("%ddBm", activity.slotData.txPower));
+//        }
+//        mUrlSchemeHex = MokoUtils.int2HexString(UrlSchemeEnum.HTTP_WWW.getUrlType());
+//        tvUrlScheme.setText(UrlSchemeEnum.HTTP_WWW.getUrlDesc());
+//        if (activity.slotData.frameTypeEnum == SlotFrameTypeEnum.URL) {
+//            mUrlSchemeHex = MokoUtils.int2HexString(activity.slotData.urlSchemeEnum.getUrlType());
+//            tvUrlScheme.setText(activity.slotData.urlSchemeEnum.getUrlDesc());
+//            String url = activity.slotData.urlContent;
+//            String urlExpansionStr = url.substring(url.length() - 2);
+//            int urlExpansionType = Integer.parseInt(urlExpansionStr, 16);
+//            UrlExpansionEnum urlEnum = UrlExpansionEnum.fromUrlExpanType(urlExpansionType);
+//            if (urlEnum == null) {
+//                etUrl.setText(MokoUtils.hex2String(url));
+//            } else {
+//                etUrl.setText(MokoUtils.hex2String(url.substring(0, url.length() - 2)) + urlEnum.getUrlExpanDesc());
+//            }
+//            etUrl.setSelection(etUrl.getText().toString().length());
+//        }
 
     }
 
@@ -197,100 +197,100 @@ public class UrlFragment extends Fragment implements SeekBar.OnSeekBarChangeList
 
     @Override
     public boolean isValid() {
-        String urlContent = etUrl.getText().toString();
-        String advInterval = etAdvInterval.getText().toString();
-        if (TextUtils.isEmpty(urlContent) || TextUtils.isEmpty(mUrlSchemeHex)) {
-            ToastUtils.showToast(activity, "Data format incorrect!");
-            return false;
-        }
-        if (TextUtils.isEmpty(advInterval)) {
-            ToastUtils.showToast(activity, "The Adv interval can not be empty.");
-            return false;
-        }
-        int advIntervalInt = Integer.parseInt(advInterval);
-        if (advIntervalInt < 1 || advIntervalInt > 100) {
-            ToastUtils.showToast(activity, "The Adv interval range is 1~100");
-            return false;
-        }
-        String urlContentHex;
-        if (urlContent.indexOf(".") >= 0) {
-            String urlExpansion = urlContent.substring(urlContent.lastIndexOf("."));
-            UrlExpansionEnum urlExpansionEnum = UrlExpansionEnum.fromUrlExpanDesc(urlExpansion);
-            if (urlExpansionEnum == null) {
-                // url中有点，但不符合eddystone结尾格式，内容长度不能超过17个字符
-                if (urlContent.length() < 2 || urlContent.length() > 17) {
-                    ToastUtils.showToast(activity, "Data format incorrect!");
-                    return false;
-                }
-                urlContentHex = MokoUtils.string2Hex(urlContent);
-            } else {
-                String content = urlContent.substring(0, urlContent.lastIndexOf("."));
-                if (content.length() < 1 || content.length() > 16) {
-                    ToastUtils.showToast(activity, "Data format incorrect!");
-                    return false;
-                }
-                urlContentHex = MokoUtils.string2Hex(urlContent.substring(0, urlContent.lastIndexOf("."))) + MokoUtils.byte2HexString((byte) urlExpansionEnum.getUrlExpanType());
-            }
-        } else {
-            // url中没有有点，内容长度不能超过17个字符
-            if (urlContent.length() < 2 || urlContent.length() > 17) {
-                ToastUtils.showToast(activity, "Data format incorrect!");
-                return false;
-            }
-            urlContentHex = MokoUtils.string2Hex(urlContent);
-        }
-        String urlParamsHex = activity.slotData.frameTypeEnum.getFrameType() + mUrlSchemeHex + urlContentHex;
-        urlParamsBytes = MokoUtils.hex2bytes(urlParamsHex);
-        advIntervalBytes = MokoUtils.toByteArray(advIntervalInt * 100, 2);
+//        String urlContent = etUrl.getText().toString();
+//        String advInterval = etAdvInterval.getText().toString();
+//        if (TextUtils.isEmpty(urlContent) || TextUtils.isEmpty(mUrlSchemeHex)) {
+//            ToastUtils.showToast(activity, "Data format incorrect!");
+//            return false;
+//        }
+//        if (TextUtils.isEmpty(advInterval)) {
+//            ToastUtils.showToast(activity, "The Adv interval can not be empty.");
+//            return false;
+//        }
+//        int advIntervalInt = Integer.parseInt(advInterval);
+//        if (advIntervalInt < 1 || advIntervalInt > 100) {
+//            ToastUtils.showToast(activity, "The Adv interval range is 1~100");
+//            return false;
+//        }
+//        String urlContentHex;
+//        if (urlContent.indexOf(".") >= 0) {
+//            String urlExpansion = urlContent.substring(urlContent.lastIndexOf("."));
+//            UrlExpansionEnum urlExpansionEnum = UrlExpansionEnum.fromUrlExpanDesc(urlExpansion);
+//            if (urlExpansionEnum == null) {
+//                // url中有点，但不符合eddystone结尾格式，内容长度不能超过17个字符
+//                if (urlContent.length() < 2 || urlContent.length() > 17) {
+//                    ToastUtils.showToast(activity, "Data format incorrect!");
+//                    return false;
+//                }
+//                urlContentHex = MokoUtils.string2Hex(urlContent);
+//            } else {
+//                String content = urlContent.substring(0, urlContent.lastIndexOf("."));
+//                if (content.length() < 1 || content.length() > 16) {
+//                    ToastUtils.showToast(activity, "Data format incorrect!");
+//                    return false;
+//                }
+//                urlContentHex = MokoUtils.string2Hex(urlContent.substring(0, urlContent.lastIndexOf("."))) + MokoUtils.byte2HexString((byte) urlExpansionEnum.getUrlExpanType());
+//            }
+//        } else {
+//            // url中没有有点，内容长度不能超过17个字符
+//            if (urlContent.length() < 2 || urlContent.length() > 17) {
+//                ToastUtils.showToast(activity, "Data format incorrect!");
+//                return false;
+//            }
+//            urlContentHex = MokoUtils.string2Hex(urlContent);
+//        }
+//        String urlParamsHex = activity.slotData.frameTypeEnum.getFrameType() + mUrlSchemeHex + urlContentHex;
+//        urlParamsBytes = MokoUtils.hex2bytes(urlParamsHex);
+//        advIntervalBytes = MokoUtils.toByteArray(advIntervalInt * 100, 2);
         return true;
     }
 
     @Override
     public void sendData() {
         // 切换通道，保证通道是在当前设置通道里
-        ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setSlot(activity.slotData.slotEnum));
-        orderTasks.add(OrderTaskAssembler.setSlotData(urlParamsBytes));
-        orderTasks.add(OrderTaskAssembler.setRadioTxPower(txPowerBytes));
-        orderTasks.add(OrderTaskAssembler.setRssi(advTxPowerBytes));
-        orderTasks.add(OrderTaskAssembler.setAdvInterval(advIntervalBytes));
-        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+//        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+//        orderTasks.add(OrderTaskAssembler.setSlot(activity.slotData.slotEnum));
+//        orderTasks.add(OrderTaskAssembler.setSlotData(urlParamsBytes));
+//        orderTasks.add(OrderTaskAssembler.setRadioTxPower(txPowerBytes));
+//        orderTasks.add(OrderTaskAssembler.setRssi(advTxPowerBytes));
+//        orderTasks.add(OrderTaskAssembler.setAdvInterval(advIntervalBytes));
+//        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
     @Override
     public void resetParams() {
-        if (activity.slotData.frameTypeEnum == activity.currentFrameTypeEnum) {
-            int advIntervalProgress = activity.slotData.advInterval / 100;
-            etAdvInterval.setText(advIntervalProgress + "");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
-
-            int rssiProgress = activity.slotData.rssi_0m + 100;
-            sbRssi.setProgress(rssiProgress);
-
-            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
-            sbTxPower.setProgress(txPowerProgress);
-
-            mUrlSchemeHex = MokoUtils.int2HexString(activity.slotData.urlSchemeEnum.getUrlType());
-            tvUrlScheme.setText(activity.slotData.urlSchemeEnum.getUrlDesc());
-            String url = activity.slotData.urlContent;
-            String urlExpansionStr = url.substring(url.length() - 2);
-            int urlExpansionType = Integer.parseInt(urlExpansionStr, 16);
-            UrlExpansionEnum urlEnum = UrlExpansionEnum.fromUrlExpanType(urlExpansionType);
-            if (urlEnum == null) {
-                etUrl.setText(MokoUtils.hex2String(url));
-            } else {
-                etUrl.setText(MokoUtils.hex2String(url.substring(0, url.length() - 2)) + urlEnum.getUrlExpanDesc());
-            }
-            etUrl.setSelection(etUrl.getText().toString().length());
-        } else {
-            etAdvInterval.setText("10");
-            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
-            sbRssi.setProgress(100);
-            sbTxPower.setProgress(6);
-
-            etUrl.setText("");
-        }
+//        if (activity.slotData.frameTypeEnum == activity.currentFrameTypeEnum) {
+//            int advIntervalProgress = activity.slotData.advInterval / 100;
+//            etAdvInterval.setText(advIntervalProgress + "");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            advIntervalBytes = MokoUtils.toByteArray(activity.slotData.advInterval, 2);
+//
+//            int rssiProgress = activity.slotData.rssi_0m + 100;
+//            sbRssi.setProgress(rssiProgress);
+//
+//            int txPowerProgress = TxPowerEnum.fromTxPower(activity.slotData.txPower).ordinal();
+//            sbTxPower.setProgress(txPowerProgress);
+//
+//            mUrlSchemeHex = MokoUtils.int2HexString(activity.slotData.urlSchemeEnum.getUrlType());
+//            tvUrlScheme.setText(activity.slotData.urlSchemeEnum.getUrlDesc());
+//            String url = activity.slotData.urlContent;
+//            String urlExpansionStr = url.substring(url.length() - 2);
+//            int urlExpansionType = Integer.parseInt(urlExpansionStr, 16);
+//            UrlExpansionEnum urlEnum = UrlExpansionEnum.fromUrlExpanType(urlExpansionType);
+//            if (urlEnum == null) {
+//                etUrl.setText(MokoUtils.hex2String(url));
+//            } else {
+//                etUrl.setText(MokoUtils.hex2String(url.substring(0, url.length() - 2)) + urlEnum.getUrlExpanDesc());
+//            }
+//            etUrl.setSelection(etUrl.getText().toString().length());
+//        } else {
+//            etAdvInterval.setText("10");
+//            etAdvInterval.setSelection(etAdvInterval.getText().toString().length());
+//            sbRssi.setProgress(100);
+//            sbTxPower.setProgress(6);
+//
+//            etUrl.setText("");
+//        }
     }
 
     public void selectUrlScheme() {

@@ -124,8 +124,6 @@ public class MokoSupport extends MokoBleLib {
     public boolean orderResponseValid(BluetoothGattCharacteristic characteristic, OrderTask orderTask) {
         final UUID responseUUID = characteristic.getUuid();
         final OrderCHAR orderCHAR = (OrderCHAR) orderTask.orderCHAR;
-        if (responseUUID.equals(OrderCHAR.CHAR_LOCKED_NOTIFY.getUuid()))
-            return true;
         return responseUUID.equals(orderCHAR.getUuid());
     }
 
@@ -134,30 +132,8 @@ public class MokoSupport extends MokoBleLib {
     public boolean orderNotify(BluetoothGattCharacteristic characteristic, byte[] value) {
         final UUID responseUUID = characteristic.getUuid();
         OrderCHAR orderCHAR = null;
-        if (responseUUID.equals(OrderCHAR.CHAR_LOCKED_NOTIFY.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_LOCKED_NOTIFY;
-            int key = value[1] & 0xff;
-            if (key != 0x63) {
-                return false;
-            }
-        }
-        if (responseUUID.equals(OrderCHAR.CHAR_TH_NOTIFY.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_TH_NOTIFY;
-        }
-        if (responseUUID.equals(OrderCHAR.CHAR_STORE_NOTIFY.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_STORE_NOTIFY;
-        }
-        if (responseUUID.equals(OrderCHAR.CHAR_THREE_AXIS_NOTIFY.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_THREE_AXIS_NOTIFY;
-        }
         if (responseUUID.equals(OrderCHAR.CHAR_DISCONNECT.getUuid())) {
             orderCHAR = OrderCHAR.CHAR_DISCONNECT;
-        }
-        if (responseUUID.equals(OrderCHAR.CHAR_LIGHT_SENSOR_CURRENT.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_LIGHT_SENSOR_CURRENT;
-        }
-        if (responseUUID.equals(OrderCHAR.CHAR_LIGHT_SENSOR_NOTIFY.getUuid())) {
-            orderCHAR = OrderCHAR.CHAR_LIGHT_SENSOR_NOTIFY;
         }
         if (orderCHAR == null)
             return false;
@@ -172,60 +148,33 @@ public class MokoSupport extends MokoBleLib {
         return true;
     }
 
-    public void enableTHNotify() {
+    public void enableSingleTriggerNotify() {
         if (mBleConfig != null)
-            mBleConfig.enableTHNotify();
+            mBleConfig.enableSingleTriggerNotify();
     }
 
-    public void disableTHNotify() {
+    public void disableSingleTriggerNotify() {
         if (mBleConfig != null)
-            mBleConfig.disableTHNotify();
+            mBleConfig.disableSingleTriggerNotify();
     }
 
-    public void enableStoreNotify() {
+    public void enableDoubleTriggerNotify() {
         if (mBleConfig != null)
-            mBleConfig.enableStoreNotify();
+            mBleConfig.enableDoubleTriggerNotify();
     }
 
-    public void disableStoreNotify() {
+    public void disableDoubleTriggerNotify() {
         if (mBleConfig != null)
-            mBleConfig.disableStoreNotify();
+            mBleConfig.disableDoubleTriggerNotify();
     }
 
-    public void enableThreeAxisNotify() {
+    public void enableLongTriggerNotify() {
         if (mBleConfig != null)
-            mBleConfig.enableThreeAxisNotify();
+            mBleConfig.enableLongTriggerNotify();
     }
 
-    public void disableThreeAxisNotify() {
+    public void disableLongTriggerNotify() {
         if (mBleConfig != null)
-            mBleConfig.disableThreeAxisNotify();
+            mBleConfig.disableLongTriggerNotify();
     }
-
-    public void enableLightSensorNotify() {
-        if (mBleConfig != null)
-            mBleConfig.enableLightSensorNotify();
-    }
-
-    public void disableLightSensorNotify() {
-        if (mBleConfig != null)
-            mBleConfig.disableLightSensorNotify();
-    }
-
-    public void enableLightSensorCurrentNotify() {
-        if (mBleConfig != null)
-            mBleConfig.enableLightSensorCurrentNotify();
-    }
-
-    public void disableLightSensorCurrentNotify() {
-        if (mBleConfig != null)
-            mBleConfig.disableLightSensorCurrentNotify();
-    }
-
-    public static boolean isNewVersion = false;
-    public ArrayList<THStoreData> thStoreData;
-    public StringBuilder thStoreString;
-    public ArrayList<LightSensorStoreData> lightSensorStoreData;
-    public StringBuilder lightSensorStoreString;
-
 }

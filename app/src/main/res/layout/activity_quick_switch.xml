@@ -243,7 +243,6 @@
             android:id="@+id/cv_hw_reset"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             app:cardCornerRadius="8dp"
             app:cardElevation="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -307,10 +306,9 @@
         </androidx.cardview.widget.CardView>
 
         <androidx.cardview.widget.CardView
-            android:id="@+id/cv_trigger_led_notify"
+            android:id="@+id/cv_scan_response_packet"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="gone"
             app:cardCornerRadius="8dp"
             app:cardElevation="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -323,17 +321,17 @@
             app:layout_constraintWidth_percent="0.44">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_trigger_led_notify"
+                android:id="@+id/cl_scan_response_packet"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_radius_stroke_white_bg"
                 android:padding="5dp">
 
                 <TextView
-                    android:id="@+id/trigger_led_notify"
+                    android:id="@+id/scan_response_packet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Trigger LED indicator"
+                    android:text="Scan response packet"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -341,7 +339,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/iv_trigger_led_notify"
+                    android:id="@+id/iv_scan_response_packet"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_alignParentRight="true"
@@ -357,7 +355,7 @@
                     app:layout_constraintRight_toRightOf="parent" />
 
                 <TextView
-                    android:id="@+id/tv_trigger_led_notify"
+                    android:id="@+id/tv_scan_response_packet"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
@@ -365,11 +363,11 @@
                     android:text="Disabled"
                     android:textColor="@drawable/selector_text_enable_color"
                     android:textSize="15sp"
-                    app:layout_constraintBottom_toBottomOf="@id/iv_trigger_led_notify"
+                    app:layout_constraintBottom_toBottomOf="@id/iv_scan_response_packet"
                     app:layout_constraintHorizontal_bias="0.7"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/iv_trigger_led_notify" />
+                    app:layout_constraintTop_toTopOf="@id/iv_scan_response_packet" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>

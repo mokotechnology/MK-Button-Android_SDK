@@ -1,282 +1,19 @@
 package com.moko.support;
 
-import com.elvishew.xlog.XLog;
 import com.moko.ble.lib.task.OrderTask;
-import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.support.entity.ParamsKeyEnum;
-import com.moko.support.entity.SlotEnum;
-import com.moko.support.task.GetAdvIntervalTask;
-import com.moko.support.task.GetAdvSlotDataTask;
-import com.moko.support.task.GetAdvTxPowerTask;
-import com.moko.support.task.GetBatteryTask;
-import com.moko.support.task.GetConnectableTask;
-import com.moko.support.task.GetDeviceTypeTask;
 import com.moko.support.task.GetFirmwareRevisionTask;
 import com.moko.support.task.GetHardwareRevisionTask;
-import com.moko.support.task.GetLightSensorCurrentTask;
-import com.moko.support.task.GetLockStateTask;
 import com.moko.support.task.GetManufacturerNameTask;
 import com.moko.support.task.GetModelNumberTask;
-import com.moko.support.task.GetRadioTxPowerTask;
 import com.moko.support.task.GetSerialNumberTask;
-import com.moko.support.task.GetSlotTypeTask;
 import com.moko.support.task.GetSoftwareRevisionTask;
-import com.moko.support.task.GetUnlockTask;
 import com.moko.support.task.ParamsTask;
-import com.moko.support.task.ResetDeviceTask;
-import com.moko.support.task.SetAdvIntervalTask;
-import com.moko.support.task.SetAdvSlotDataTask;
-import com.moko.support.task.SetAdvSlotTask;
-import com.moko.support.task.SetAdvTxPowerTask;
-import com.moko.support.task.SetConnectableTask;
-import com.moko.support.task.SetLockStateTask;
-import com.moko.support.task.SetRadioTxPowerTask;
-import com.moko.support.task.SetUnlockTask;
+import com.moko.support.task.PasswordTask;
 
-import java.util.Arrays;
-
-import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
+import androidx.annotation.IntRange;
 
 public class OrderTaskAssembler {
-
-    /**
-     * @Description 获取设备锁状态get lock state
-     */
-    public static OrderTask getLockState() {
-        GetLockStateTask task = new GetLockStateTask();
-        return task;
-    }
-
-    /**
-     * @Description 设置设备锁方式
-     */
-    public static OrderTask setLockStateDirected(int enable) {
-        SetLockStateTask task = new SetLockStateTask();
-        task.setData(MokoUtils.toByteArray(enable, 1));
-        return task;
-    }
-
-    /**
-     * @Description 设置设备锁状态set lock state
-     */
-    public static OrderTask setLockState(String newPassword) {
-        if (passwordBytes != null) {
-            XLog.i("旧密码：" + MokoUtils.bytesToHexString(passwordBytes));
-            byte[] bt1 = newPassword.getBytes();
-            byte[] newPasswordBytes = new byte[16];
-            for (int i = 0; i < newPasswordBytes.length; i++) {
-                if (i < bt1.length) {
-                    newPasswordBytes[i] = bt1[i];
-                } else {
-                    newPasswordBytes[i] = (byte) 0xff;
-                }
-            }
-            XLog.i("新密码：" + MokoUtils.bytesToHexString(newPasswordBytes));
-            // 用旧密码加密新密码
-            byte[] newPasswordEncryptBytes = encrypt(newPasswordBytes, passwordBytes);
-            if (newPasswordEncryptBytes != null) {
-                SetLockStateTask task = new SetLockStateTask();
-                byte[] unLockBytes = new byte[newPasswordEncryptBytes.length + 1];
-                unLockBytes[0] = 0;
-                System.arraycopy(newPasswordEncryptBytes, 0, unLockBytes, 1, newPasswordEncryptBytes.length);
-                task.setData(unLockBytes);
-                return task;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @Description 获取解锁加密内容get unlock
-     */
-    public static OrderTask getUnLock() {
-        GetUnlockTask task = new GetUnlockTask();
-        return task;
-    }
-
-    private static byte[] passwordBytes;
-
-    /**
-     * @Description 解锁set unlock
-     */
-    public static OrderTask setUnLock(String password, byte[] value) {
-        byte[] bt1 = password.getBytes();
-        passwordBytes = new byte[16];
-        for (int i = 0; i < passwordBytes.length; i++) {
-            if (i < bt1.length) {
-                passwordBytes[i] = bt1[i];
-            } else {
-                passwordBytes[i] = (byte) 0xff;
-            }
-        }
-        XLog.i("密码：" + MokoUtils.bytesToHexString(passwordBytes));
-        byte[] unLockBytes = encrypt(value, passwordBytes);
-        if (unLockBytes != null) {
-            SetUnlockTask task = new SetUnlockTask();
-            task.setData(unLockBytes);
-            return task;
-        }
-        return null;
-    }
-
-    /**
-     * @Date 2018/1/22
-     * @Author wenzheng.liu
-     * @Description 加密
-     */
-    public static byte[] encrypt(byte[] value, byte[] password) {
-        try {
-            SecretKeySpec key = new SecretKeySpec(password, "AES");// 转换为AES专用密钥
-            Cipher cipher = Cipher.getInstance("AES");// 创建密码器
-            cipher.init(Cipher.ENCRYPT_MODE, key);// 初始化为加密模式的密码器
-            byte[] result = cipher.doFinal(value);// 加密
-            byte[] data = Arrays.copyOf(result, 16);
-            return data;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * @Description 获取通道类型
-     */
-    public static OrderTask getSlotType() {
-        GetSlotTypeTask task = new GetSlotTypeTask();
-        return task;
-    }
-
-
-    /**
-     * @Description 获取设备类型
-     */
-    public static OrderTask getDeviceType() {
-        GetDeviceTypeTask task = new GetDeviceTypeTask();
-        return task;
-    }
-
-    /**
-     * @Description 获取3轴参数
-     */
-    public static OrderTask getAxisParams() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_AXIS_PARAMS);
-        return task;
-    }
-
-    /**
-     * @Description 设置3轴参数
-     */
-    public static OrderTask setAxisParams(int rate, int scale, int sensitivity) {
-        ParamsTask task = new ParamsTask();
-        task.setAxisParams(rate, scale, sensitivity);
-        return task;
-    }
-
-    /**
-     * @Description 获取温湿度采样率
-     */
-    public static OrderTask getTHPeriod() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_TH_PERIOD);
-        return task;
-    }
-
-    /**
-     * @Description 设置温湿度采样率
-     */
-    public static OrderTask setTHPeriod(int period) {
-        ParamsTask task = new ParamsTask();
-        task.setTHPriod(period);
-        return task;
-    }
-
-    /**
-     * @Description 获取存储条件
-     */
-    public static OrderTask getStorageCondition() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_STORAGE_CONDITION);
-        return task;
-    }
-
-    /**
-     * @Description 设置存储条件
-     */
-    public static OrderTask setStorageCondition(int storageType, String storageData) {
-        ParamsTask task = new ParamsTask();
-        task.setStorageCondition(storageType, storageData);
-        return task;
-    }
-
-    /**
-     * @Description 获取设备时间
-     */
-    public static OrderTask getDeviceTime() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_DEVICE_TIME);
-        return task;
-    }
-
-    /**
-     * @Description 设置设备时间
-     */
-    public static OrderTask setDeviceTime(int year, int month, int day, int hour, int minute, int second) {
-        ParamsTask task = new ParamsTask();
-        task.setDeviceTime(year, month, day, hour, minute, second);
-        return task;
-    }
-
-    public static OrderTask setTHEmpty() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.SET_TH_EMPTY);
-        return task;
-    }
-
-    /**
-     * @Description 获取设备MAC
-     */
-    public static OrderTask getDeviceMac() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_DEVICE_MAC);
-        return task;
-    }
-
-    /**
-     * @Description 获取连接状态
-     */
-    public static OrderTask getConnectable() {
-        GetConnectableTask task = new GetConnectableTask();
-        return task;
-    }
-
-    /**
-     * @Description 设置连接状态
-     */
-    public static OrderTask setConnectable(int enable) {
-        SetConnectableTask task = new SetConnectableTask();
-        task.setData(MokoUtils.toByteArray(enable, 1));
-        return task;
-    }
-
-    /**
-     * @Description 获取按键关键
-     */
-    public static OrderTask getButtonPower() {
-        ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_BUTTON_POWER);
-        return task;
-    }
-
-    /**
-     * @Description 设置按键关键
-     */
-    public static OrderTask setButtonPower(boolean enable) {
-        ParamsTask task = new ParamsTask();
-        task.setButtonPower(enable);
-        return task;
-    }
 
     /**
      * @Description 获取制造商
@@ -326,88 +63,154 @@ public class OrderTaskAssembler {
         return task;
     }
 
+
+    public static OrderTask getDeviceMac() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DEVICE_MAC);
+        return task;
+    }
+
+    public static OrderTask getAxisParams() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_AXIS_PARAMS);
+        return task;
+    }
+
+    public static OrderTask setAxisParams(@IntRange(from = 0, to = 4) int rate,
+                                          @IntRange(from = 0, to = 3) int scale,
+                                          @IntRange(from = 1, to = 2048) int sensitivity) {
+        ParamsTask task = new ParamsTask();
+        task.setAxisParams(rate, scale, sensitivity);
+        return task;
+    }
+
+    /**
+     * @Description 获取连接状态
+     */
+    public static OrderTask getConnectable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_BLE_CONNECTABLE);
+        return task;
+    }
+
+    /**
+     * @Description 设置连接状态
+     */
+    public static OrderTask setConnectable(int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setBleConnectable(enable);
+        return task;
+    }
+
+    public static OrderTask getVerifyPasswordEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_VERIFY_PASSWORD_ENABLE);
+        return task;
+    }
+
+    public static OrderTask setVerifyPasswordEnable(@IntRange(from = 0, to = 1) int enable) {
+        PasswordTask task = new PasswordTask();
+        task.setVerifyPasswordEnable(enable);
+        return task;
+    }
+
+    public static OrderTask setPassword(String password) {
+        PasswordTask task = new PasswordTask();
+        task.setPassword(password);
+        return task;
+    }
+
+    public static OrderTask getEffectiveClickInterval() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_EFFECTIVE_CLICK_INTERVAL);
+        return task;
+    }
+
+    public static OrderTask setEffectiveClickInterval(@IntRange(from = 500, to = 1500) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setEffectiveClickInterval(interval);
+        return task;
+    }
+
+    public static OrderTask getScanResponseEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_SCAN_RESPONSE_ENABLE);
+        return task;
+    }
+
+    public static OrderTask setScanResponseEnable(@IntRange(from = 0, to = 1) int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setScanResponseEnable(enable);
+        return task;
+    }
+
+    public static OrderTask getChangePasswordDisconnectEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_CHANGE_PASSWORD_DISCONNECT_ENABLE);
+        return task;
+    }
+
+    public static OrderTask setChangePasswordDisconnectEnable(@IntRange(from = 0, to = 1) int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setChangePasswordDisconnectEnable(enable);
+        return task;
+    }
+
+    /**
+     * @Description 获取UTC0时区时间
+     */
+    public static OrderTask getSystemTime() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_SYSTEM_TIME);
+        return task;
+    }
+
+    /**
+     * @Description 设置UTC0时区时间
+     */
+    public static OrderTask setSystemTime() {
+        ParamsTask task = new ParamsTask();
+        task.setSystemTime();
+        return task;
+    }
+
+
+    /**
+     * @Description 获取按键关键
+     */
+    public static OrderTask getButtonPowerEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_BUTTON_POWER_ENABLE);
+        return task;
+    }
+
+    /**
+     * @Description 设置按键关键
+     */
+    public static OrderTask setButtonPowerEnable(int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setButtonPowerEnable(enable);
+        return task;
+    }
+
+    public static OrderTask getButtonResetEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_BUTTON_RESET_ENABLE);
+        return task;
+    }
+
+    public static OrderTask setButtonResetEnable(int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setButtonResetEnable(enable);
+        return task;
+    }
+
     /**
      * @Description 获取电池电量
      */
     public static OrderTask getBattery() {
-        GetBatteryTask task = new GetBatteryTask();
-        return task;
-    }
-
-    /**
-     * @Description 切换通道
-     */
-    public static OrderTask setSlot(SlotEnum slot) {
-        SetAdvSlotTask task = new SetAdvSlotTask();
-        task.setData(slot);
-        return task;
-    }
-
-    /**
-     * @Description 获取通道数据
-     */
-    public static OrderTask getSlotData() {
-        GetAdvSlotDataTask task = new GetAdvSlotDataTask();
-        return task;
-    }
-
-    /**
-     * @Description 设置通道信息
-     */
-    public static OrderTask setSlotData(byte[] data) {
-        SetAdvSlotDataTask task = new SetAdvSlotDataTask();
-        task.setData(data);
-        return task;
-    }
-
-    /**
-     * @Description 获取信号强度
-     */
-    public static OrderTask getRadioTxPower() {
-        GetRadioTxPowerTask task = new GetRadioTxPowerTask();
-        return task;
-    }
-
-    /**
-     * @Description 设置信号强度
-     */
-    public static OrderTask setRadioTxPower(byte[] data) {
-        SetRadioTxPowerTask task = new SetRadioTxPowerTask();
-        task.setData(data);
-        return task;
-    }
-
-    /**
-     * @Description 获取广播间隔
-     */
-    public static OrderTask getAdvInterval() {
-        GetAdvIntervalTask task = new GetAdvIntervalTask();
-        return task;
-    }
-
-    /**
-     * @Description 设置广播间隔
-     */
-    public static OrderTask setAdvInterval(byte[] data) {
-        SetAdvIntervalTask task = new SetAdvIntervalTask();
-        task.setData(data);
-        return task;
-    }
-
-    /**
-     * @Description 设置广播强度
-     */
-    public static OrderTask setRssi(byte[] data) {
-        SetAdvTxPowerTask advTxPowerTask = new SetAdvTxPowerTask();
-        advTxPowerTask.setData(data);
-        return advTxPowerTask;
-    }
-
-    /**
-     * @Description 设置广播强度
-     */
-    public static OrderTask getRssi() {
-        GetAdvTxPowerTask task = new GetAdvTxPowerTask();
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_BATTERY_VOLTAGE);
         return task;
     }
 
@@ -416,7 +219,16 @@ public class OrderTaskAssembler {
      */
     public static OrderTask setClose() {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.SET_CLOSE);
+        task.setData(ParamsKeyEnum.KEY_CLOSE);
+        return task;
+    }
+
+    /**
+     * @Description 保存为默认值
+     */
+    public static OrderTask setDefault() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DEFAULT);
         return task;
     }
 
@@ -424,74 +236,300 @@ public class OrderTaskAssembler {
      * @Description 恢复出厂设置
      */
     public static OrderTask resetDevice() {
-        ResetDeviceTask task = new ResetDeviceTask();
-        return task;
-    }
-
-    public static OrderTask getTrigger() {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_TRIGGER_DATA);
+        task.getData(ParamsKeyEnum.KEY_RESET);
         return task;
     }
 
-    public static OrderTask setTriggerClose() {
+    public static OrderTask setSinglePressEventClear() {
         ParamsTask task = new ParamsTask();
-        task.setTriggerData();
+        task.getData(ParamsKeyEnum.KEY_SINGLE_PRESS_EVENT_CLEAR);
         return task;
     }
 
-    public static OrderTask setTHTrigger(int triggerType, boolean isAbove, int params, boolean isStart) {
+    public static OrderTask setDoublePressEventClear() {
         ParamsTask task = new ParamsTask();
-        task.setTriggerData(triggerType, isAbove, params, isStart);
+        task.getData(ParamsKeyEnum.KEY_DOUBLE_PRESS_EVENT_CLEAR);
         return task;
     }
 
-    public static OrderTask setTappedMovesTrigger(int triggerType, int params, boolean isStart) {
+    public static OrderTask setLongPressEventClear() {
         ParamsTask task = new ParamsTask();
-        task.setTriggerData(triggerType, params, isStart);
+        task.getData(ParamsKeyEnum.KEY_LONG_PRESS_EVENT_CLEAR);
         return task;
     }
 
-    public static OrderTask setLightTrigger(int triggerType, int params, boolean isAlways, boolean isStart) {
+//    public static OrderTask getSlotActive() {
+//        ParamsTask task = new ParamsTask();
+//        task.getData(ParamsKeyEnum.KEY_SLOT_ACTIVE);
+//        return task;
+//    }
+
+    public static OrderTask getSlotParams(@IntRange(from = 0, to = 3) int slot) {
         ParamsTask task = new ParamsTask();
-        task.setTriggerData(triggerType, params, isAlways, isStart);
+        task.getSlotParams(slot);
         return task;
     }
 
-    public static OrderTask getHWResetEnable() {
+    public static OrderTask setSlotParams(@IntRange(from = 0, to = 3) int slot,
+                                          @IntRange(from = 0, to = 1) int enable,
+                                          @IntRange(from = -100, to = 0) int rssi,
+                                          @IntRange(from = 20, to = 10000) int interval,
+                                          @IntRange(from = -40, to = 4) int txPower) {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_HW_RESET_ENABLE);
+        task.setSlotParams(slot, enable, rssi, interval, txPower);
         return task;
     }
 
-    public static OrderTask setHWResetEnable(int enable) {
+    public static OrderTask getSlotTriggerParams(@IntRange(from = 0, to = 3) int slot) {
         ParamsTask task = new ParamsTask();
-        task.setHWResetEnable(enable);
+        task.getSlotTriggerParams(slot);
         return task;
     }
 
-    public static OrderTask getLightSensorCurrent() {
-        GetLightSensorCurrentTask task = new GetLightSensorCurrentTask();
-        return task;
-    }
-
-    public static OrderTask getTriggerLEDNotifyEnable() {
+    public static OrderTask setSlotTriggerParams(@IntRange(from = 0, to = 3) int slot,
+                                                 @IntRange(from = 0, to = 1) int enable,
+                                                 @IntRange(from = -100, to = 0) int rssi,
+                                                 @IntRange(from = 20, to = 10000) int interval,
+                                                 @IntRange(from = -40, to = 4) int txPower,
+                                                 @IntRange(from = 1, to = 65535) int triggerAdvTime) {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.GET_TRIGGER_LED_NOTIFICATION);
+        task.setSlotTriggerParams(slot, enable, rssi, interval, txPower, triggerAdvTime);
         return task;
     }
 
-
-
-    public static OrderTask setLightSensorEmpty() {
+    public static OrderTask getSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 3) int slot) {
         ParamsTask task = new ParamsTask();
-        task.setData(ParamsKeyEnum.SET_LIGHT_SENSOR_EMPTY);
+        task.getSlotAdvBeforeTriggerEnable(slot);
         return task;
     }
 
-    public static OrderTask setTriggerLEDNotifyEnable(int enable) {
+    public static OrderTask setSlotAdvBeforeTriggerEnable(@IntRange(from = 0, to = 1) int enable) {
         ParamsTask task = new ParamsTask();
-        task.setTriggerLEDNotifyEnable(enable);
+        task.setSlotAdvBeforeTriggerEnable(enable);
+        return task;
+    }
+
+    public static OrderTask getAbnormalInactivityAlarmStaticInterval() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_ABNORMAL_INACTIVITY_ALARM_STATIC_INTERVAL);
+        return task;
+    }
+
+    public static OrderTask setAbnormalInactivityAlarmStaticInterval(@IntRange(from = 1, to = 65535) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setAbnormalInactivityAlarmStaticInterval(interval);
+        return task;
+    }
+
+    public static OrderTask getSlotTriggerAlarmNotifyType(@IntRange(from = 0, to = 3) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.getSlotTriggerAlarmNotifyType(slot);
+        return task;
+    }
+
+    public static OrderTask setSlotTriggerAlarmNotifyType(@IntRange(from = 0, to = 3) int slot,
+                                                          @IntRange(from = 0, to = 5) int type) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotTriggerAlarmNotifyType(slot, type);
+        return task;
+    }
+
+    public static OrderTask getPowerSavingEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_POWER_SAVING_ENABLE);
+        return task;
+    }
+
+    public static OrderTask setPowerSavingEnable(@IntRange(from = 0, to = 1) int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setPowerSavingEnable(enable);
+        return task;
+    }
+
+    public static OrderTask getPowerSavingStaticTriggerTime() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_POWER_SAVING_STATIC_TRIGGER_TIME);
+        return task;
+    }
+
+    public static OrderTask setPowerSavingStaticTriggerTime(@IntRange(from = 1, to = 255) int time) {
+        ParamsTask task = new ParamsTask();
+        task.setPowerSavingStaticTriggerTime(time);
+        return task;
+    }
+
+    public static OrderTask getSlotLEDNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.getSlotLEDNotifyAlarmParams(slot);
+        return task;
+    }
+
+    public static OrderTask setSlotLEDNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
+                                                        @IntRange(from = 1, to = 6000) int time,
+                                                        @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotLEDNotifyAlarmParams(slot, time, interval);
+        return task;
+    }
+
+    public static OrderTask getSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.getSlotVibrationNotifyAlarmParams(slot);
+        return task;
+    }
+
+    public static OrderTask setSlotVibrationNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
+                                                              @IntRange(from = 1, to = 6000) int time,
+                                                              @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotVibrationNotifyAlarmParams(slot, time, interval);
+        return task;
+    }
+
+    public static OrderTask getSlotBuzzerNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot) {
+        ParamsTask task = new ParamsTask();
+        task.getSlotBuzzerNotifyAlarmParams(slot);
+        return task;
+    }
+
+    public static OrderTask setSlotBuzzerNotifyAlarmParams(@IntRange(from = 0, to = 3) int slot,
+                                                           @IntRange(from = 1, to = 6000) int time,
+                                                           @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setSlotBuzzerNotifyAlarmParams(slot, time, interval);
+        return task;
+    }
+
+    public static OrderTask getRemoteLEDNotifyAlarmParams() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_REMOTE_LED_NOTIFY_ALARM_PARAMS);
+        return task;
+    }
+
+    public static OrderTask setRemoteLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
+                                                          @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setRemoteLEDNotifyAlarmParams(time, interval);
+        return task;
+    }
+
+    public static OrderTask getRemoteSloVibrationNotifyAlarmParams() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS);
+        return task;
+    }
+
+    public static OrderTask setRemoteVibrationNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
+                                                                @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setRemoteVibrationNotifyAlarmParams(time, interval);
+        return task;
+    }
+
+    public static OrderTask getRemoteBuzzerNotifyAlarmParams() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS);
+        return task;
+    }
+
+    public static OrderTask setRemoteBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
+                                                             @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setRemoteBuzzerNotifyAlarmParams(time, interval);
+        return task;
+    }
+
+    public static OrderTask setDismissAlarmEnable(@IntRange(from = 0, to = 1) int enable) {
+        ParamsTask task = new ParamsTask();
+        task.setDismissAlarmEnable(enable);
+        return task;
+    }
+
+    public static OrderTask getDismissLEDNotifyAlarmParams() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DISMISS_LED_NOTIFY_ALARM_PARAMS);
+        return task;
+    }
+
+    public static OrderTask setDismissLEDNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
+                                                           @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setDismissLEDNotifyAlarmParams(time, interval);
+        return task;
+    }
+
+    public static OrderTask getDismissSloVibrationNotifyAlarmParams() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS);
+        return task;
+    }
+
+    public static OrderTask setDismissVibrationNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
+                                                                 @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setDismissVibrationNotifyAlarmParams(time, interval);
+        return task;
+    }
+
+    public static OrderTask getDismissBuzzerNotifyAlarmParams() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS);
+        return task;
+    }
+
+    public static OrderTask setDismissBuzzerNotifyAlarmParams(@IntRange(from = 1, to = 6000) int time,
+                                                              @IntRange(from = 100, to = 10000) int interval) {
+        ParamsTask task = new ParamsTask();
+        task.setDismissBuzzerNotifyAlarmParams(time, interval);
+        return task;
+    }
+
+    public static OrderTask setDismissAlarmType(@IntRange(from = 0, to = 5) int type) {
+        ParamsTask task = new ParamsTask();
+        task.setDismissAlarmType(type);
+        return task;
+    }
+
+    public static OrderTask getDeviceId() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DEVICE_ID);
+        return task;
+    }
+
+    public static OrderTask setDeviceId(String deviceId) {
+        ParamsTask task = new ParamsTask();
+        task.setDeviceId(deviceId);
+        return task;
+    }
+
+    public static OrderTask getDeviceName() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DEVICE_NAME);
+        return task;
+    }
+
+    public static OrderTask setDeviceName(String deviceId) {
+        ParamsTask task = new ParamsTask();
+        task.setDeviceName(deviceId);
+        return task;
+    }
+
+    public static OrderTask getSinglePressEventCount() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_SINGLE_PRESS_EVENTS);
+        return task;
+    }
+
+    public static OrderTask getDoublePressEventCount() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DOUBLE_PRESS_EVENTS);
+        return task;
+    }
+
+    public static OrderTask getLongPressEventCount() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_LONG_PRESS_EVENTS);
         return task;
     }
 }

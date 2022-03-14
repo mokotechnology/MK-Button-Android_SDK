@@ -131,7 +131,7 @@ public class StorageTHFragment extends Fragment {
             String humiStr = mHumidityDatas.get(mHumiditySelected);
             tvTHTips.setText(getString(R.string.t_h_tips_0, tempStr, humiStr));
             tvStorageTemp.setText(tempStr);
-            activity.setSelectedTemp(value + 1);
+//            activity.setSelectedTemp(value + 1);
         });
         tempDialog.show(activity.getSupportFragmentManager());
     }
@@ -145,7 +145,7 @@ public class StorageTHFragment extends Fragment {
             String humiStr = mHumidityDatas.get(mHumiditySelected);
             tvTHTips.setText(getString(R.string.t_h_tips_0, tempStr, humiStr));
             tvStorageHumidity.setText(humiStr);
-            activity.setSelectedHumidity(value + 1);
+//            activity.setSelectedHumidity(value + 1);
         });
         humidityDialog.show(activity.getSupportFragmentManager());
     }

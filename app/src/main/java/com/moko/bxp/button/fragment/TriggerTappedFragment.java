@@ -15,7 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.activity.SlotDataActivity;
+import com.moko.bxp.button.activity.AlarmModeConfigActivity;
 import com.moko.bxp.button.utils.ToastUtils;
 
 import butterknife.BindView;
@@ -42,7 +42,7 @@ public class TriggerTappedFragment extends Fragment implements RadioGroup.OnChec
     EditText etStop;
 
 
-    private SlotDataActivity activity;
+    private AlarmModeConfigActivity activity;
 
 
     public TriggerTappedFragment() {
@@ -65,7 +65,7 @@ public class TriggerTappedFragment extends Fragment implements RadioGroup.OnChec
         Log.i(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_trigger_tapped, container, false);
         ButterKnife.bind(this, view);
-        activity = (SlotDataActivity) getActivity();
+        activity = (AlarmModeConfigActivity) getActivity();
         if (mDuration == 0) {
             if (mIsStart) {
                 rbAlwaysStart.setChecked(true);

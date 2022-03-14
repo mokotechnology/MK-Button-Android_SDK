@@ -100,7 +100,7 @@ public class StorageHumidityFragment extends Fragment {
                 tvHumidityOnlyTips.setText(getString(R.string.humidity_only_tips_1, mDatas.get(value)));
             }
             tvStorageHumidityOnly.setText(mDatas.get(mSelected));
-            activity.setSelectedHumidity(value);
+//            activity.setSelectedHumidity(value);
         });
         dialog.show(activity.getSupportFragmentManager());
     }

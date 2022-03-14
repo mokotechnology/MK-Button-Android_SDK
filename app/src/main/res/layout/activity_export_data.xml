@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey_f2f2f2"
+    android:background="@color/white_ffffff"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -27,28 +26,29 @@
             android:textSize="15sp" />
 
         <TextView
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="@string/export_data"
+            android:text=""
             android:textColor="@color/white_ffffff"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:background="@drawable/shape_radius_white_bg"
-        android:paddingLeft="25dp"
-        android:paddingTop="10dp"
-        android:paddingRight="25dp"
-        android:paddingBottom="10dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <LinearLayout
             android:id="@+id/ll_sync"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1.0"
             android:clickable="true"
             android:gravity="center_horizontal"
             android:onClick="onSync"
@@ -57,7 +57,7 @@
             <ImageView
                 android:id="@+id/iv_sync"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:src="@drawable/ic_sync" />
 
             <TextView
@@ -68,142 +68,68 @@
                 android:text="Sync"
                 android:textColor="@color/black_333333"
                 android:textSize="13sp" />
+
         </LinearLayout>
 
-
-        <CheckBox
-            android:id="@+id/cb_data_show"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="40dp"
-            android:layout_toRightOf="@id/ll_sync"
-            android:button="@null"
-            android:checked="false"
-            android:drawableTop="@drawable/selector_data_show"
-            android:text="Display"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="1.0"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_empty"
+            android:gravity="center_horizontal"
+            android:onClick="onEmpty"
+            android:text="Empty"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_export"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_weight="1.0"
+            android:clickable="true"
+            android:drawableTop="@drawable/ic_download"
+            android:enabled="false"
+            android:gravity="center_horizontal"
+            android:onClick="onExport"
+            android:text="Export"
             android:textColor="@color/black_333333"
             android:textSize="13sp" />
 
 
-        <TextView
-            android:id="@+id/tv_export"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:drawableTop="@drawable/ic_download"
-            android:onClick="onExport"
-            android:text="Export"
-            android:textColor="@color/black_333333"
-            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_empty"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginRight="20dp"
-            android:layout_toLeftOf="@id/tv_export"
-            android:clickable="true"
-            android:drawableTop="@drawable/ic_empty"
-            android:onClick="onEmpty"
-            android:text="Erase all"
-            android:textColor="@color/black_333333"
-            android:textSize="15sp" />
+            android:layout_weight="1.3"
+            android:gravity="center"
+            android:text="Timestamp" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@id/ll_sync"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:layout_weight="1.0">
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:text="Trigger mode" />
 
-            <LinearLayout
-                android:id="@+id/ll_th_data"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+    </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_export_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ll_sync"
+        android:padding="10dp"
+        tools:listitem="@layout/item_export_data" />
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.3"
-                        android:gravity="center"
-                        android:text="Time"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:gravity="center"
-                        android:text="Temperature(℃)"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:gravity="center"
-                        android:text="Humidity(%RH)"
-                        android:textSize="12sp" />
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_th_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1.0"
-                    tools:listitem="@layout/item_export_data" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_th_chart_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white_ffffff"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/th_chart_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="@string/th_chart_total"
-                    android:textColor="@color/blue_2f84d0"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/th_chart_display"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:text="@string/th_chart_display"
-                    android:textColor="@color/blue_2f84d0"
-                    android:textSize="13sp" />
-
-                <com.moko.bxp.button.view.THChartView
-                    android:id="@+id/temp_chart_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="5dp"
-                    app:ylineDesc="Temperature(℃)" />
-
-                <com.moko.bxp.button.view.THChartView
-                    android:id="@+id/humi_chart_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:layout_marginTop="20dp"
-                    app:linecolor="@color/green_00ff00"
-                    app:ylineDesc="Humidity(%RH)" />
-            </LinearLayout>
-        </FrameLayout>
-    </RelativeLayout>
 </LinearLayout>

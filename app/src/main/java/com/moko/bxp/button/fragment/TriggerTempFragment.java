@@ -12,7 +12,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.activity.SlotDataActivity;
+import com.moko.bxp.button.activity.AlarmModeConfigActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +36,7 @@ public class TriggerTempFragment extends Fragment implements SeekBar.OnSeekBarCh
 //    TextView triggerTemp;
 
 
-    private SlotDataActivity activity;
+    private AlarmModeConfigActivity activity;
 
 
     public TriggerTempFragment() {
@@ -59,7 +59,7 @@ public class TriggerTempFragment extends Fragment implements SeekBar.OnSeekBarCh
         Log.i(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_trigger_temp, container, false);
         ButterKnife.bind(this, view);
-        activity = (SlotDataActivity) getActivity();
+        activity = (AlarmModeConfigActivity) getActivity();
         rgAdvertising.setOnCheckedChangeListener(this);
         sbTriggerTemp.setOnSeekBarChangeListener(this);
         if (mIsStart) {

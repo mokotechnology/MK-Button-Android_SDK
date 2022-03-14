@@ -100,7 +100,7 @@ public class StorageTempFragment extends Fragment {
                 tvTempOnlyTips.setText(getString(R.string.temp_only_tips_1, mDatas.get(value)));
             }
             tvStorageTempOnly.setText(mDatas.get(value));
-            activity.setSelectedTemp(value);
+//            activity.setSelectedTemp(value);
         });
         dialog.show(activity.getSupportFragmentManager());
     }

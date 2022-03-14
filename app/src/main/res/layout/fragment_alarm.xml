@@ -1,0 +1,61 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onSinglePressMode"
+        android:text="Single press mode"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onDoublePressMode"
+        android:text="Double press mode"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onLongPressMode"
+        android:text="Long press mode"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:clickable="true"
+        android:drawableRight="@drawable/arrow_right"
+        android:gravity="center_vertical"
+        android:onClick="onAbnormalInactivityMode"
+        android:text="Abnormal inactivity mode"
+        android:textColor="@color/black_333333"
+        android:textSize="15sp" />
+
+    <View style="@style/divider_line" />
+
+</LinearLayout>
