@@ -29,7 +29,7 @@ public class ParamsTask extends OrderTask {
             case KEY_DEVICE_MAC:
             case KEY_AXIS_PARAMS:
             case KEY_BLE_CONNECTABLE:
-            case KEY_MODIFY_PASSWORD:
+//            case KEY_MODIFY_PASSWORD:
             case KEY_EFFECTIVE_CLICK_INTERVAL:
             case KEY_BUTTON_POWER_ENABLE:
             case KEY_SCAN_RESPONSE_ENABLE:
@@ -53,7 +53,6 @@ public class ParamsTask extends OrderTask {
             case KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS:
             case KEY_DISMISS_BUZZER_NOTIFY_ALARM_PARAMS:
             case KEY_DISMISS_ALARM_TYPE:
-            case KEY_DISMISS_ALARM:
             case KEY_BATTERY_VOLTAGE:
             case KEY_SYSTEM_TIME:
             case KEY_DEVICE_ID:
@@ -74,6 +73,7 @@ public class ParamsTask extends OrderTask {
             case KEY_SINGLE_PRESS_EVENT_CLEAR:
             case KEY_DOUBLE_PRESS_EVENT_CLEAR:
             case KEY_LONG_PRESS_EVENT_CLEAR:
+            case KEY_DISMISS_ALARM:
                 createSetParamsData(key.getParamsKey());
                 break;
         }

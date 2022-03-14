@@ -211,7 +211,7 @@
                     app:layout_constraintLeft_toLeftOf="parent" />
 
                 <TextView
-                    android:id="@+id/motion_threshold_unit"
+                    android:id="@+id/tv_motion_threshold_unit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="x1mg"
@@ -233,7 +233,7 @@
                     android:singleLine="true"
                     android:textColor="@color/black_333333"
                     android:textSize="15sp"
-                    app:layout_constraintRight_toLeftOf="@id/motion_threshold_unit"
+                    app:layout_constraintRight_toLeftOf="@id/tv_motion_threshold_unit"
                     app:layout_constraintTop_toBottomOf="@id/tv_axis_data_rate" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>

@@ -33,16 +33,6 @@
             android:textColor="@color/white_ffffff"
             android:textSize="17sp" />
 
-        <ImageView
-            android:id="@+id/iv_save"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:onClick="onSave"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
-            android:src="@drawable/save" />
     </RelativeLayout>
 
     <ScrollView
@@ -60,7 +50,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/shape_radius_white_bg"
-                android:padding="10dp">
+                android:padding="10dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -69,7 +60,7 @@
                     android:text="Remote reminder"
                     android:textColor="@color/black_333333"
                     android:textSize="17sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tv_sync"
@@ -91,14 +82,14 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:background="@drawable/shape_radius_white_bg"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="10dp">
+                    android:padding="10dp"
+                    android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -140,7 +131,22 @@
                         android:textColor="@color/black_333333"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBaseline_toBaselineOf="@id/led_notify_remind"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                    <TextView
+                        android:id="@+id/led_notify_remind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/shape_radius_blue_btn_bg"
+                        android:clickable="true"
+                        android:onClick="onLedNotifyRemind"
+                        android:padding="12dp"
+                        android:text="Remind"
+                        android:textColor="@color/white_ffffff"
+                        android:textSize="15sp"
+                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <View
@@ -148,7 +154,7 @@
                         android:layout_marginTop="10dp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/led_notify" />
+                        app:layout_constraintTop_toBottomOf="@id/led_notify_remind" />
 
                     <TextView
                         android:id="@+id/blinking_time_unit"
@@ -238,7 +244,22 @@
                         android:textColor="@color/black_333333"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBaseline_toBaselineOf="@id/vibration_notify_remind"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                    <TextView
+                        android:id="@+id/vibration_notify_remind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/shape_radius_blue_btn_bg"
+                        android:clickable="true"
+                        android:onClick="onVibrationNotifyRemind"
+                        android:padding="12dp"
+                        android:text="Remind"
+                        android:textColor="@color/white_ffffff"
+                        android:textSize="15sp"
+                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <View
@@ -246,7 +267,7 @@
                         android:layout_marginTop="10dp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/vibration_notify" />
+                        app:layout_constraintTop_toBottomOf="@id/vibration_notify_remind" />
 
                     <TextView
                         android:id="@+id/vibrating_time_unit"
@@ -336,7 +357,22 @@
                         android:textColor="@color/black_333333"
                         android:textSize="17sp"
                         android:textStyle="bold"
-                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintBaseline_toBaselineOf="@id/buzzer_notify_remind"
+                        app:layout_constraintLeft_toLeftOf="parent" />
+
+                    <TextView
+                        android:id="@+id/buzzer_notify_remind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/shape_radius_blue_btn_bg"
+                        android:clickable="true"
+                        android:onClick="onBuzzerNotifyRemind"
+                        android:padding="12dp"
+                        android:text="Remind"
+                        android:textColor="@color/white_ffffff"
+                        android:textSize="15sp"
+                        app:layout_constraintRight_toRightOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <View
@@ -344,7 +380,7 @@
                         android:layout_marginTop="10dp"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/buzzer_notify" />
+                        app:layout_constraintTop_toBottomOf="@id/buzzer_notify_remind" />
 
                     <TextView
                         android:id="@+id/ringing_time_unit"

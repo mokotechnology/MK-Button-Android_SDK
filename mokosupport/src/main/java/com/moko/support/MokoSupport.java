@@ -13,14 +13,11 @@ import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
-import com.moko.support.entity.LightSensorStoreData;
 import com.moko.support.entity.OrderCHAR;
-import com.moko.support.entity.THStoreData;
 import com.moko.support.handler.MokoCharacteristicHandler;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -176,5 +173,15 @@ public class MokoSupport extends MokoBleLib {
     public void disableLongTriggerNotify() {
         if (mBleConfig != null)
             mBleConfig.disableLongTriggerNotify();
+    }
+
+    public void enableAccNotify() {
+        if (mBleConfig != null)
+            mBleConfig.enableAccNotify();
+    }
+
+    public void disableAccNotify() {
+        if (mBleConfig != null)
+            mBleConfig.disableAccNotify();
     }
 }

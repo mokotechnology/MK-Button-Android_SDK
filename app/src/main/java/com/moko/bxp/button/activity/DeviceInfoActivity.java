@@ -88,7 +88,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     private boolean mIsClose;
     private boolean mReceiverTag = false;
     private int mDisconnectType;
-    private int mDeviceType;
     public boolean isConfigError;
 
     @Override
@@ -118,14 +117,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         final String action = event.getAction();
         runOnUiThread(() -> {
             if (MokoConstants.ACTION_DISCONNECTED.equals(action)) {
-//                if (MokoSupport.getInstance().thStoreData != null) {
-//                    MokoSupport.getInstance().thStoreData.clear();
-//                    MokoSupport.getInstance().thStoreString = null;
-//                }
-//                if (MokoSupport.getInstance().lightSensorStoreData != null) {
-//                    MokoSupport.getInstance().lightSensorStoreData.clear();
-//                    MokoSupport.getInstance().lightSensorStoreString = null;
-//                }
                 // 设备断开，通知页面更新
                 if (mIsClose)
                     return;
@@ -155,8 +146,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
 
-    private String unLockResponse;
-
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
     public void onOrderTaskResponseEvent(OrderTaskResponseEvent event) {
         EventBus.getDefault().cancelEventDelivery(event);
@@ -169,31 +158,42 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_DISCONNECT:
-                        if (value.length >= 1) {
-//                            mDisconnectType = value[0] & 0xff;
-//                            if (mDisconnectType == 1 && isModifyPassword) {
-//                                isModifyPassword = false;
-//                                dismissSyncProgressDialog();
-//                                AlertMessageDialog dialog = new AlertMessageDialog();
-//                                dialog.setMessage("Modify password success!\nPlease reconnect the Device.");
-//                                dialog.setCancelGone();
-//                                dialog.setConfirm(R.string.ok);
-//                                dialog.setOnAlertConfirmListener(() -> {
-//                                    setResult(RESULT_OK);
-//                                    finish();
-//                                });
-//                                dialog.show(getSupportFragmentManager());
-//                            } else if (mDisconnectType == 2) {
-//                                AlertMessageDialog dialog = new AlertMessageDialog();
-//                                dialog.setMessage("Reset success!\nBeacon is disconnected.");
-//                                dialog.setCancelGone();
-//                                dialog.setConfirm(R.string.ok);
-//                                dialog.setOnAlertConfirmListener(() -> {
-//                                    setResult(RESULT_OK);
-//                                    finish();
-//                                });
-//                                dialog.show(getSupportFragmentManager());
-//                            }
+                        if (value.length == 5) {
+                            mDisconnectType = value[4] & 0xff;
+                            if (mDisconnectType == 2 && isModifyPassword) {
+                                isModifyPassword = false;
+                                dismissSyncProgressDialog();
+                                AlertMessageDialog dialog = new AlertMessageDialog();
+                                dialog.setMessage("Modify password success!\nPlease reconnect the Device.");
+                                dialog.setCancelGone();
+                                dialog.setConfirm(R.string.ok);
+                                dialog.setOnAlertConfirmListener(() -> {
+                                    setResult(RESULT_OK);
+                                    finish();
+                                });
+                                dialog.show(getSupportFragmentManager());
+                            } else if (mDisconnectType == 3) {
+                                AlertMessageDialog dialog = new AlertMessageDialog();
+                                dialog.setMessage("Reset success!\nBeacon is disconnected.");
+                                dialog.setCancelGone();
+                                dialog.setConfirm(R.string.ok);
+                                dialog.setOnAlertConfirmListener(() -> {
+                                    setResult(RESULT_OK);
+                                    finish();
+                                });
+                                dialog.show(getSupportFragmentManager());
+                            } else if (mDisconnectType == 4) {
+                                AlertMessageDialog dialog = new AlertMessageDialog();
+                                dialog.setTitle("Dismiss");
+                                dialog.setMessage("The device disconnected!");
+                                dialog.setConfirm("Exit");
+                                dialog.setCancelGone();
+                                dialog.setOnAlertConfirmListener(() -> {
+                                    setResult(RESULT_OK);
+                                    finish();
+                                });
+                                dialog.show(getSupportFragmentManager());
+                            }
                         }
                         break;
                 }
@@ -209,6 +209,34 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 int responseType = response.responseType;
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
+                    case CHAR_PASSWORD:
+                        if (value.length == 4) {
+                            int header = value[0] & 0xFF;// 0xEB
+                            int flag = value[1] & 0xFF;// read or write
+                            int cmd = value[2] & 0xFF;
+                            if (header != 0xEB)
+                                return;
+                            ParamsKeyEnum configKeyEnum = ParamsKeyEnum.fromParamKey(cmd);
+                            if (configKeyEnum == null) {
+                                return;
+                            }
+                            int length = value[3] & 0xFF;
+                            if (flag == 0x01 && length == 0x01) {
+                                // write
+                                int result = value[4] & 0xFF;
+                                switch (configKeyEnum) {
+                                    case KEY_MODIFY_PASSWORD:
+                                        if (result != 0) {
+                                            isConfigError = true;
+                                        }
+                                        if (isConfigError) {
+                                            ToastUtils.showToast(DeviceInfoActivity.this, "Opps！Save failed. Please check the input characters and try again.");
+                                        }
+                                        break;
+                                }
+                            }
+                        }
+                        break;
                     case CHAR_PARAMS:
                         if (value.length == 4) {
                             int header = value[0] & 0xFF;// 0xEB
@@ -252,9 +280,15 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                         }
                                         break;
                                     case KEY_DEVICE_NAME:
-                                        if (length >0) {
-                                            String deviceName = new String(Arrays.copyOfRange(value, 4, 4+length));
+                                        if (length > 0) {
+                                            String deviceName = new String(Arrays.copyOfRange(value, 4, 4 + length));
                                             deviceFragment.setDeviceName(deviceName);
+                                        }
+                                        break;
+                                    case KEY_VERIFY_PASSWORD_ENABLE:
+                                        if (length > 0) {
+                                            int enable = value[4] & 0xFF;
+                                            deviceFragment.setViewShown(enable == 1);
                                         }
                                         break;
 
@@ -273,6 +307,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.getDeviceName());
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
+        orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -339,6 +374,8 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
         if (requestCode == AppConstants.REQUEST_CODE_QUICK_SWITCH) {
             if (resultCode == RESULT_OK) {
                 boolean enablePasswordVerify = data.getBooleanExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, false);
+                if (enablePasswordVerify)
+                    deviceFragment.setResetShown();
             }
         }
     }
@@ -447,6 +484,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void modifyPassword(String password) {
         isModifyPassword = true;
         showSyncingProgressDialog();
+        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setNewPassword(password));
     }
 
     public void resetDevice() {
@@ -474,7 +512,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void onBack(View view) {
         back();
     }
-
 
 
     public void onSave(View view) {
@@ -533,24 +570,36 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void onAlarmEvent(View view) {
         if (isWindowLocked())
             return;
+        Intent intent = new Intent(this, AlarmEventActivity.class);
+        startActivity(intent);
     }
 
     public void onDismissAlarmConfig(View view) {
         if (isWindowLocked())
             return;
+        Intent intent = new Intent(this, DismissAlarmNotifyTypeActivity.class);
+        startActivity(intent);
     }
 
     public void onRemoteReminder(View view) {
         if (isWindowLocked())
             return;
+        Intent intent = new Intent(this, RemoteReminderActivity.class);
+        startActivity(intent);
     }
 
     public void onAcc(View view) {
         if (isWindowLocked())
             return;
+        Intent intent = new Intent(this, AccDataActivity.class);
+        startActivity(intent);
     }
 
     public void onPowerSavingConfig(View view) {
+        if (isWindowLocked())
+            return;
+        Intent intent = new Intent(this, PowerSavingConfigActivity.class);
+        startActivity(intent);
     }
 
     public void onQuickSwitch(View view) {
@@ -583,6 +632,14 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             resetDevice();
         });
         resetDeviceDialog.show(getSupportFragmentManager());
+    }
+
+
+    public void onSystemInfo(View view) {
+        if (isWindowLocked())
+            return;
+        Intent intent = new Intent(this, SystemInfoActivity.class);
+        startActivity(intent);
     }
 
     private ProgressDialog mDFUDialog;
@@ -717,7 +774,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             @Override
             public void onPasswordNotMatch() {
                 AlertMessageDialog dialog = new AlertMessageDialog();
-                dialog.setMessage("Password not match!\nPlease try again.");
+                dialog.setMessage("Password do not match!\nPlease try again.");
                 dialog.setConfirm(R.string.ok);
                 dialog.setCancelGone();
                 dialog.show(getSupportFragmentManager());

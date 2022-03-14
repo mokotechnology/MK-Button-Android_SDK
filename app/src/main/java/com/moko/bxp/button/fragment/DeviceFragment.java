@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.bxp.button.R;
@@ -23,6 +24,10 @@ public class DeviceFragment extends Fragment {
 
     @BindView(R.id.et_device_name)
     EditText etDeviceName;
+    @BindView(R.id.rl_reset_factory)
+    RelativeLayout rlResetFactory;
+    @BindView(R.id.rl_password)
+    RelativeLayout rlPassword;
 
     public DeviceFragment() {
     }
@@ -57,5 +62,14 @@ public class DeviceFragment extends Fragment {
         List<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.setDeviceName(deviceName));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+    }
+
+    public void setViewShown(boolean enablePasswordVerify) {
+        rlResetFactory.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
+        rlPassword.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
+    }
+
+    public void setResetShown() {
+        rlResetFactory.setVisibility(View.VISIBLE);
     }
 }

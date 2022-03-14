@@ -119,6 +119,11 @@ public class OrderTaskAssembler {
         task.setPassword(password);
         return task;
     }
+    public static OrderTask setNewPassword(String password) {
+        PasswordTask task = new PasswordTask();
+        task.setNewPassword(password);
+        return task;
+    }
 
     public static OrderTask getEffectiveClickInterval() {
         ParamsTask task = new ParamsTask();
@@ -353,7 +358,7 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask setPowerSavingStaticTriggerTime(@IntRange(from = 1, to = 255) int time) {
+    public static OrderTask setPowerSavingStaticTriggerTime(@IntRange(from = 1, to = 65535) int time) {
         ParamsTask task = new ParamsTask();
         task.setPowerSavingStaticTriggerTime(time);
         return task;
@@ -414,7 +419,7 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getRemoteSloVibrationNotifyAlarmParams() {
+    public static OrderTask getRemoteVibrationNotifyAlarmParams() {
         ParamsTask task = new ParamsTask();
         task.getData(ParamsKeyEnum.KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS);
         return task;
@@ -440,9 +445,21 @@ public class OrderTaskAssembler {
         return task;
     }
 
+    public static OrderTask setDismissAlarm() {
+        ParamsTask task = new ParamsTask();
+        task.setData(ParamsKeyEnum.KEY_DISMISS_ALARM);
+        return task;
+    }
+
     public static OrderTask setDismissAlarmEnable(@IntRange(from = 0, to = 1) int enable) {
         ParamsTask task = new ParamsTask();
         task.setDismissAlarmEnable(enable);
+        return task;
+    }
+
+    public static OrderTask getDismissAlarmEnable() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DISMISS_ALARM_ENABLE);
         return task;
     }
 
@@ -459,7 +476,7 @@ public class OrderTaskAssembler {
         return task;
     }
 
-    public static OrderTask getDismissSloVibrationNotifyAlarmParams() {
+    public static OrderTask getDismissVibrationNotifyAlarmParams() {
         ParamsTask task = new ParamsTask();
         task.getData(ParamsKeyEnum.KEY_DISMISS_VIBRATION_NOTIFY_ALARM_PARAMS);
         return task;
@@ -482,6 +499,12 @@ public class OrderTaskAssembler {
                                                               @IntRange(from = 100, to = 10000) int interval) {
         ParamsTask task = new ParamsTask();
         task.setDismissBuzzerNotifyAlarmParams(time, interval);
+        return task;
+    }
+
+    public static OrderTask getDismissAlarmType() {
+        ParamsTask task = new ParamsTask();
+        task.getData(ParamsKeyEnum.KEY_DISMISS_ALARM_TYPE);
         return task;
     }
 

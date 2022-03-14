@@ -83,13 +83,14 @@
                     android:paddingLeft="10dp"
                     android:paddingTop="10dp"
                     android:paddingBottom="10dp"
-                    android:src="@drawable/ic_checked" />
+                    android:src="@drawable/ic_unchecked" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/cl_static_trigger_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/iv_power_saving_mode">
+                    android:layout_below="@id/iv_power_saving_mode"
+                    android:visibility="gone">
 
                     <View
                         style="@style/divider_line"

@@ -67,8 +67,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:clickable="true"
-        android:onClick="onModifyPassword"
-        android:visibility="gone">
+        android:onClick="onModifyPassword">
 
         <TextView
             android:layout_width="wrap_content"
@@ -113,7 +112,7 @@
         android:clickable="true"
         android:drawableRight="@drawable/arrow_right"
         android:gravity="center_vertical"
-        android:onClick="onDeviceInfo"
+        android:onClick="onSystemInfo"
         android:text="Device info"
         android:textColor="@color/black_333333"
         android:textSize="15sp" />
