@@ -1,4 +1,4 @@
-package com.moko.bxp.button.entity;
+package com.moko.support.entity;
 
 public class ExportData {
     public String timestamp;

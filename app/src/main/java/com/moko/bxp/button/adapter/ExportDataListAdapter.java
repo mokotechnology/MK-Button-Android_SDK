@@ -3,7 +3,7 @@ package com.moko.bxp.button.adapter;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.entity.ExportData;
+import com.moko.support.entity.ExportData;
 
 public class ExportDataListAdapter extends BaseQuickAdapter<ExportData, BaseViewHolder> {
     public ExportDataListAdapter() {

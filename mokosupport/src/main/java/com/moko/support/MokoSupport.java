@@ -13,11 +13,13 @@ import com.moko.ble.lib.event.ConnectStatusEvent;
 import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
+import com.moko.support.entity.ExportData;
 import com.moko.support.entity.OrderCHAR;
 import com.moko.support.handler.MokoCharacteristicHandler;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -196,4 +198,11 @@ public class MokoSupport extends MokoBleLib {
         if (mBleConfig != null)
             mBleConfig.disableAccNotify();
     }
+
+    public ArrayList<ExportData> exportSingleEvents;
+    public StringBuilder storeSingleEventString;
+    public ArrayList<ExportData> exportDoubleEvents;
+    public StringBuilder storeDoubleEventString;
+    public ArrayList<ExportData> exportLongEvents;
+    public StringBuilder storeLongEventString;
 }

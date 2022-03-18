@@ -205,7 +205,7 @@ public class AccDataActivity extends BaseActivity{
                 byte[] value = response.responseValue;
                 switch (orderCHAR) {
                     case CHAR_ACC:
-                        if (value.length > 5) {
+                        if (value.length > 9) {
                             tvXData.setText(String.format("X-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value,4,6))));
                             tvYData.setText(String.format("Y-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value,6,8))));
                             tvZData.setText(String.format("Z-axis:%dmg", MokoUtils.toIntSigned(Arrays.copyOfRange(value,8,10))));

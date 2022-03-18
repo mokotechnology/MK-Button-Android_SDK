@@ -191,6 +191,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         if (MokoConstants.ACTION_ORDER_TIMEOUT.equals(action)) {
         }
         if (MokoConstants.ACTION_ORDER_FINISH.equals(action)) {
+            dismissLoadingMessageDialog();
         }
         if (MokoConstants.ACTION_ORDER_RESULT.equals(action)) {
             OrderTaskResponse response = event.getResponse();

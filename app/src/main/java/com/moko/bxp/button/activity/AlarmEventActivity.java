@@ -45,9 +45,6 @@ public class AlarmEventActivity extends BaseActivity {
     @BindView(R.id.tv_long_press_event_count)
     TextView tvLongPressEventCount;
 
-//    public boolean isConfigError;
-//    public int slotType;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +116,10 @@ public class AlarmEventActivity extends BaseActivity {
                                         } else {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Success！");
                                             tvSinglePressEventCount.setText("0");
+                                            if (MokoSupport.getInstance().exportSingleEvents != null) {
+                                                MokoSupport.getInstance().exportSingleEvents.clear();
+                                                MokoSupport.getInstance().storeSingleEventString = null;
+                                            }
                                         }
                                         break;
                                     case KEY_DOUBLE_PRESS_EVENT_CLEAR:
@@ -127,6 +128,10 @@ public class AlarmEventActivity extends BaseActivity {
                                         } else {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Success！");
                                             tvDoublePressEventCount.setText("0");
+                                            if (MokoSupport.getInstance().exportDoubleEvents != null) {
+                                                MokoSupport.getInstance().exportDoubleEvents.clear();
+                                                MokoSupport.getInstance().storeDoubleEventString = null;
+                                            }
                                         }
                                         break;
                                     case KEY_LONG_PRESS_EVENT_CLEAR:
@@ -135,6 +140,10 @@ public class AlarmEventActivity extends BaseActivity {
                                         } else {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Success！");
                                             tvLongPressEventCount.setText("0");
+                                            if (MokoSupport.getInstance().exportLongEvents != null) {
+                                                MokoSupport.getInstance().exportLongEvents.clear();
+                                                MokoSupport.getInstance().storeLongEventString = null;
+                                            }
                                         }
                                         break;
                                     case KEY_SYSTEM_TIME:

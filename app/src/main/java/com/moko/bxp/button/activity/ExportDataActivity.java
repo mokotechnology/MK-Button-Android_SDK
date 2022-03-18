@@ -18,9 +18,9 @@ import com.moko.bxp.button.BaseApplication;
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.adapter.ExportDataListAdapter;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
-import com.moko.bxp.button.entity.ExportData;
 import com.moko.bxp.button.utils.Utils;
 import com.moko.support.MokoSupport;
+import com.moko.support.entity.ExportData;
 import com.moko.support.entity.OrderCHAR;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,7 +45,12 @@ import butterknife.ButterKnife;
 
 public class ExportDataActivity extends BaseActivity {
 
-    private static final String TRACKED_FILE = "trigger_event.txt";
+    private static final String EXPORT_FILE_SINGLE = "Single_press_trigger_event.txt";
+    private static final String EXPORT_FILE_DOUBLE = "Double_press_trigger_event.txt";
+    private static final String EXPORT_FILE_LONG = "Long_press_trigger_event.txt";
+    private static final String EXPORT_FILE_SINGLE_TITLE = "Single_press_trigger_event";
+    private static final String EXPORT_FILE_DOUBLE_TITLE = "Double_press_trigger_event";
+    private static final String EXPORT_FILE_LONG_TITLE = "Long_press_trigger_event";
 
     private static String PATH_LOGCAT;
     @BindView(R.id.iv_sync)
@@ -66,6 +71,7 @@ public class ExportDataActivity extends BaseActivity {
     private SimpleDateFormat sdf;
     private TimeZone timeZone;
     private boolean mIsShown;
+    private String exportTitle;
 
 
     public int slotType;
@@ -81,16 +87,32 @@ public class ExportDataActivity extends BaseActivity {
         switch (slotType) {
             case 0:
                 tvTitle.setText("Single press event");
+                exportDatas = MokoSupport.getInstance().exportSingleEvents;
+                storeString = MokoSupport.getInstance().storeSingleEventString;
+                PATH_LOGCAT = BaseApplication.PATH_LOGCAT + File.separator + EXPORT_FILE_SINGLE;
+                exportTitle = EXPORT_FILE_SINGLE_TITLE;
                 break;
             case 1:
                 tvTitle.setText("Double press event");
+                exportDatas = MokoSupport.getInstance().exportDoubleEvents;
+                storeString = MokoSupport.getInstance().storeDoubleEventString;
+                PATH_LOGCAT = BaseApplication.PATH_LOGCAT + File.separator + EXPORT_FILE_DOUBLE;
+                exportTitle = EXPORT_FILE_DOUBLE_TITLE;
                 break;
             case 2:
                 tvTitle.setText("Long press event");
+                exportDatas = MokoSupport.getInstance().exportLongEvents;
+                storeString = MokoSupport.getInstance().storeLongEventString;
+                PATH_LOGCAT = BaseApplication.PATH_LOGCAT + File.separator + EXPORT_FILE_LONG;
+                exportTitle = EXPORT_FILE_LONG_TITLE;
                 break;
         }
-        exportDatas = new ArrayList<>();
-        storeString = new StringBuilder();
+        if (exportDatas != null && exportDatas.size() > 0 && storeString != null) {
+            tvExport.setEnabled(true);
+        } else {
+            exportDatas = new ArrayList<>();
+            storeString = new StringBuilder();
+        }
         adapter = new ExportDataListAdapter();
         adapter.openLoadAnimation();
         adapter.replaceData(exportDatas);
@@ -99,7 +121,6 @@ public class ExportDataActivity extends BaseActivity {
         timeZone = TimeZone.getTimeZone("GMT");
         sdf = new SimpleDateFormat(AppConstants.PATTERN_YYYY_MM_DD_T_HH_MM_SS_Z, Locale.US);
         sdf.setTimeZone(timeZone);
-        PATH_LOGCAT = BaseApplication.PATH_LOGCAT + File.separator + TRACKED_FILE;
         EventBus.getDefault().register(this);
     }
 
@@ -198,12 +219,18 @@ public class ExportDataActivity extends BaseActivity {
         if (mIsSync) {
             if (slotType == 0) {
                 MokoSupport.getInstance().disableSingleTriggerNotify();
+                MokoSupport.getInstance().exportSingleEvents = exportDatas;
+                MokoSupport.getInstance().storeSingleEventString = storeString;
             }
             if (slotType == 1) {
                 MokoSupport.getInstance().disableDoubleTriggerNotify();
+                MokoSupport.getInstance().exportDoubleEvents = exportDatas;
+                MokoSupport.getInstance().storeDoubleEventString = storeString;
             }
             if (slotType == 2) {
                 MokoSupport.getInstance().disableLongTriggerNotify();
+                MokoSupport.getInstance().exportLongEvents = exportDatas;
+                MokoSupport.getInstance().storeLongEventString = storeString;
             }
         }
         finish();
@@ -254,6 +281,26 @@ public class ExportDataActivity extends BaseActivity {
         tvExport.setEnabled(false);
         exportDatas.clear();
         adapter.replaceData(exportDatas);
+        switch (slotType) {
+            case 0:
+                if (MokoSupport.getInstance().exportSingleEvents != null) {
+                    MokoSupport.getInstance().exportSingleEvents.clear();
+                    MokoSupport.getInstance().storeSingleEventString = null;
+                }
+                break;
+            case 1:
+                if (MokoSupport.getInstance().exportDoubleEvents != null) {
+                    MokoSupport.getInstance().exportDoubleEvents.clear();
+                    MokoSupport.getInstance().storeDoubleEventString = null;
+                }
+                break;
+            case 2:
+                if (MokoSupport.getInstance().exportLongEvents != null) {
+                    MokoSupport.getInstance().exportLongEvents.clear();
+                    MokoSupport.getInstance().storeLongEventString = null;
+                }
+                break;
+        }
     }
 
     public void onExport(View view) {
@@ -269,9 +316,7 @@ public class ExportDataActivity extends BaseActivity {
                 File file = getTrackedFile();
                 // 发送邮件
                 String address = "Development@mokotechnology.com";
-                String title = "Trigger Event";
-                String content = title;
-                Utils.sendEmail(ExportDataActivity.this, address, content, title, "Choose Email Client", file);
+                Utils.sendEmail(ExportDataActivity.this, address, exportTitle, exportTitle, "Choose Email Client", file);
             }
         }, 500);
     }

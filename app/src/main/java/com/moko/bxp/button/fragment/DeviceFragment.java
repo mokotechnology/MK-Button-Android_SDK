@@ -2,6 +2,8 @@ package com.moko.bxp.button.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DeviceFragment extends Fragment {
+    private final String FILTER_ASCII = "[ -~]*";
 
     @BindView(R.id.et_device_name)
     EditText etDeviceName;
@@ -43,6 +46,17 @@ public class DeviceFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_device, container, false);
         ButterKnife.bind(this, view);
+        InputFilter filter = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                if (!(source + "").matches(FILTER_ASCII)) {
+                    return "";
+                }
+
+                return null;
+            }
+        };
+        etDeviceName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), filter});
         return view;
     }
 

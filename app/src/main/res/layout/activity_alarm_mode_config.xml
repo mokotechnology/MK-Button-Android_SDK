@@ -139,8 +139,8 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="-1dp"
                             android:digits="0123456789abcdefABCDEF"
-                            android:hint="1-8 bytes"
-                            android:maxLength="16"
+                            android:hint="1-6 bytes"
+                            android:maxLength="12"
                             android:singleLine="true"
                             android:textColor="@color/black_333333"
                             android:textSize="15sp" />
