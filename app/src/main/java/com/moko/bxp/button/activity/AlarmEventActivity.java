@@ -59,6 +59,9 @@ public class AlarmEventActivity extends BaseActivity {
             showSyncingProgressDialog();
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.getSystemTime());
+            orderTasks.add(OrderTaskAssembler.getSinglePressEventCount());
+            orderTasks.add(OrderTaskAssembler.getDoublePressEventCount());
+            orderTasks.add(OrderTaskAssembler.getLongPressEventCount());
             MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
         }
     }
@@ -231,13 +234,6 @@ public class AlarmEventActivity extends BaseActivity {
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
-    public void onCheckSinglePressEvent(View view) {
-        if (isWindowLocked())
-            return;
-        showSyncingProgressDialog();
-        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getSinglePressEventCount());
-    }
-
     public void onClearSinglePressEvent(View view) {
         if (isWindowLocked())
             return;
@@ -253,18 +249,9 @@ public class AlarmEventActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    public void onCheckDoublePressEvent(View view) {
-        if (isWindowLocked())
-            return;
-        showSyncingProgressDialog();
-        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getDoublePressEventCount());
-
-    }
-
     public void onClearDoublePressEvent(View view) {
         if (isWindowLocked())
             return;
-        ;
         showSyncingProgressDialog();
         MokoSupport.getInstance().sendOrder(OrderTaskAssembler.setDoublePressEventClear());
     }
@@ -277,14 +264,6 @@ public class AlarmEventActivity extends BaseActivity {
         startActivity(intent);
     }
 
-
-    public void onCheckLongPressEvent(View view) {
-        if (isWindowLocked())
-            return;
-
-        showSyncingProgressDialog();
-        MokoSupport.getInstance().sendOrder(OrderTaskAssembler.getLongPressEventCount());
-    }
 
     public void onClearLongPressEvent(View view) {
         if (isWindowLocked())

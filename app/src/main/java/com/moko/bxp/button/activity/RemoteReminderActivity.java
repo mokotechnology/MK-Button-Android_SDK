@@ -12,7 +12,6 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -122,11 +121,7 @@ public class RemoteReminderActivity extends BaseActivity {
                                         if (isConfigError) {
                                             ToastUtils.showToast(RemoteReminderActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
-                                            AlertMessageDialog dialog = new AlertMessageDialog();
-                                            dialog.setMessage("Saved Successfully！");
-                                            dialog.setConfirm("OK");
-                                            dialog.setCancelGone();
-                                            dialog.show(getSupportFragmentManager());
+                                            ToastUtils.showToast(this, "Success");
                                         }
                                         break;
                                 }

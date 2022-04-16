@@ -22,7 +22,6 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.BottomDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
@@ -160,11 +159,7 @@ public class AccDataActivity extends BaseActivity{
                                         if (isConfigError) {
                                             ToastUtils.showToast(AccDataActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
-                                            AlertMessageDialog dialog = new AlertMessageDialog();
-                                            dialog.setMessage("Saved Successfully！");
-                                            dialog.setConfirm("OK");
-                                            dialog.setCancelGone();
-                                            dialog.show(getSupportFragmentManager());
+                                            ToastUtils.showToast(this, "Success");
                                         }
                                         break;
                                 }
@@ -187,7 +182,7 @@ public class AccDataActivity extends BaseActivity{
                                             } else if (mSelectedScale == 2) {
                                                 tvMotionThresholdUnit.setText("x4mg");
                                             } else if (mSelectedScale == 3) {
-                                                tvMotionThresholdUnit.setText("x8mg");
+                                                tvMotionThresholdUnit.setText("x12mg");
                                             }
                                         }
                                         break;
@@ -326,7 +321,7 @@ public class AccDataActivity extends BaseActivity{
             } else if (mSelectedScale == 2) {
                 tvMotionThresholdUnit.setText("x4mg");
             } else if (mSelectedScale == 3) {
-                tvMotionThresholdUnit.setText("x8mg");
+                tvMotionThresholdUnit.setText("x12mg");
             }
             tvAxisScale.setText(axisScales.get(value));
         });

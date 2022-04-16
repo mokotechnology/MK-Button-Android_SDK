@@ -81,7 +81,7 @@
             android:drawableTop="@drawable/ic_empty"
             android:gravity="center_horizontal"
             android:onClick="onEmpty"
-            android:text="Empty"
+            android:text="Empty list"
             android:textColor="@color/black_333333"
             android:textSize="13sp" />
 

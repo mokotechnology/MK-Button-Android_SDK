@@ -1,10 +1,13 @@
 package com.moko.bxp.button.activity;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -13,7 +16,6 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -41,6 +43,8 @@ public class PowerSavingConfigActivity extends BaseActivity {
     EditText etStaticTriggerTime;
     @BindView(R.id.cl_static_trigger_time)
     ConstraintLayout clStaticTriggerTime;
+    @BindView(R.id.tv_static_trigger_time_tips)
+    TextView tvStaticTriggerTimeTips;
     public boolean isConfigError;
     public boolean isEnable;
 
@@ -50,6 +54,23 @@ public class PowerSavingConfigActivity extends BaseActivity {
         setContentView(R.layout.activity_power_saving_config);
         ButterKnife.bind(this);
         EventBus.getDefault().register(this);
+        etStaticTriggerTime.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String triggerTime = editable.toString();
+                tvStaticTriggerTimeTips.setText(getString(R.string.static_trigger_time_tips, triggerTime));
+            }
+        });
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
             MokoSupport.getInstance().enableBluetooth();
@@ -121,11 +142,7 @@ public class PowerSavingConfigActivity extends BaseActivity {
                                         if (isConfigError) {
                                             ToastUtils.showToast(PowerSavingConfigActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
-                                            AlertMessageDialog dialog = new AlertMessageDialog();
-                                            dialog.setMessage("Saved Successfully！");
-                                            dialog.setConfirm("OK");
-                                            dialog.setCancelGone();
-                                            dialog.show(getSupportFragmentManager());
+                                            ToastUtils.showToast(this, "Success");
                                         }
                                         break;
                                 }

@@ -140,8 +140,8 @@ public class AdvInfoAnalysisImpl implements DeviceInfoAnalysis<AdvInfo> {
             triggerData.triggerCount = triggerCount;
             advInfo.triggerDataHashMap.put(triggerTypeFrame, triggerData);
         }
+        advInfo.deviceInfoFrame = deviceInfoFrame;
         if (deviceInfoFrame == 0) {
-            advInfo.deviceInfoFrame = deviceInfoFrame;
             advInfo.rangingData = rangeData;
             advInfo.accX = accX;
             advInfo.accY = accY;

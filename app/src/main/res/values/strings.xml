@@ -34,6 +34,8 @@
     <!--    <string name="t_h_tips_3"><![CDATA[*The device stores T&H data when the temperature or humidity changes arbitrarily.]]></string>-->
     <!--    <string name="trigger_tapped_tips_3">*The Beacon will always stop advertising after press button %s times.</string>-->
     <string name="rssi_filter_tips">* RSSI filtering is the highest priority filtering condition. BLE Name and MAC Address filtering must first meet the RSSI filtering condition.\n* There is an \"OR\" relationship between the BLE Name filtering and the MAC Address filtering.</string>
+    <string name="abnormal_inactivity_time_tips">*After device keep static for %ss, abnormal inactivity alarm will be triggered and start advertising for %ss.</string>
+    <string name="static_trigger_time_tips">*After device keep static for %ss, it will stop advertising and disable alarm mode to enter into power saving mode until device moves.</string>
     <string-array name="alarm_notify_type">
         <item>Silent</item>
         <item>LED</item>

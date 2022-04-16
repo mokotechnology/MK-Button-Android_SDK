@@ -126,7 +126,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/blinking_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Static trigger time"
@@ -136,10 +135,11 @@
                         app:layout_constraintLeft_toLeftOf="parent" />
 
                     <TextView
+                        android:id="@+id/tv_static_trigger_time_tips"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="*After device keep static for 600s, it will stop advertising and disable alarm mode to enter into power saving mode until device moves. "
+                        android:text="@string/static_trigger_time_tips"
                         android:textColor="@color/red_ff0000"
                         android:textSize="12sp"
                         app:layout_constraintLeft_toLeftOf="parent"

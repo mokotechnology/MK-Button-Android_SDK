@@ -109,6 +109,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             // 蓝牙未打开，开启蓝牙
             MokoSupport.getInstance().enableBluetooth();
         }
+        getAlarmSwitch();
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING, priority = 100)
@@ -256,7 +257,6 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                             deviceFragment.setViewShown(enable == 1);
                                         }
                                         break;
-
                                 }
                             }
                         }
@@ -277,19 +277,20 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                 // write
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
-                                    case KEY_EFFECTIVE_CLICK_INTERVAL:
                                     case KEY_DEVICE_NAME:
+                                        if (result == 0) {
+                                            isConfigError = true;
+                                        }
+                                        break;
+                                    case KEY_EFFECTIVE_CLICK_INTERVAL:
+                                    case KEY_DEVICE_ID:
                                         if (result == 0) {
                                             isConfigError = true;
                                         }
                                         if (isConfigError) {
                                             ToastUtils.showToast(DeviceInfoActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
-                                            AlertMessageDialog dialog = new AlertMessageDialog();
-                                            dialog.setMessage("Saved Successfully！");
-                                            dialog.setConfirm("OK");
-                                            dialog.setCancelGone();
-                                            dialog.show(getSupportFragmentManager());
+                                            ToastUtils.showToast(this, "Success");
                                         }
                                         break;
                                 }
@@ -297,6 +298,21 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                             if (flag == 0x00) {
                                 // read
                                 switch (configKeyEnum) {
+                                    case KEY_SLOT_PARAMS:
+                                        if (length == 6) {
+                                            int slot = value[4];
+                                            int slotEnable = value[5] & 0xFF;
+                                            if (slot == 0) {
+                                                alarmFragment.setSinglePressModeSwitch(slotEnable);
+                                            } else if (slot == 1) {
+                                                alarmFragment.setDoublePressModeSwitch(slotEnable);
+                                            } else if (slot == 2) {
+                                                alarmFragment.setLongPressModeSwitch(slotEnable);
+                                            } else if (slot == 3) {
+                                                alarmFragment.setAbnormalInactivityModeSwitch(slotEnable);
+                                            }
+                                        }
+                                        break;
                                     case KEY_EFFECTIVE_CLICK_INTERVAL:
                                         if (length == 2) {
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
@@ -306,7 +322,26 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                                     case KEY_DEVICE_NAME:
                                         if (length > 0) {
                                             String deviceName = new String(Arrays.copyOfRange(value, 4, 4 + length));
+                                            mDeviceName = deviceName;
                                             deviceFragment.setDeviceName(deviceName);
+                                        }
+                                        break;
+                                    case KEY_DEVICE_MAC:
+                                        if (length == 6) {
+                                            String mac = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 4, 10));
+                                            StringBuffer stringBuffer = new StringBuffer(mac);
+                                            stringBuffer.insert(2, ":");
+                                            stringBuffer.insert(5, ":");
+                                            stringBuffer.insert(8, ":");
+                                            stringBuffer.insert(11, ":");
+                                            stringBuffer.insert(14, ":");
+                                            mDeviceMac = stringBuffer.toString().toUpperCase();
+                                        }
+                                        break;
+                                    case KEY_DEVICE_ID:
+                                        if (length > 0) {
+                                            String deviceIdHex = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 4, 4 + length));
+                                            deviceFragment.setDeviceId(deviceIdHex);
                                         }
                                         break;
                                 }
@@ -319,12 +354,23 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     }
 
 
+    private void getAlarmSwitch() {
+        showSyncingProgressDialog();
+        ArrayList<OrderTask> orderTasks = new ArrayList<>();
+        orderTasks.add(OrderTaskAssembler.getSlotParams(0));
+        orderTasks.add(OrderTaskAssembler.getSlotParams(1));
+        orderTasks.add(OrderTaskAssembler.getSlotParams(2));
+        orderTasks.add(OrderTaskAssembler.getSlotParams(3));
+        MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+    }
+
     private void getDeviceInfo() {
         showSyncingProgressDialog();
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.getDeviceName());
         orderTasks.add(OrderTaskAssembler.getDeviceMac());
         orderTasks.add(OrderTaskAssembler.getVerifyPasswordEnable());
+        orderTasks.add(OrderTaskAssembler.getDeviceId());
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -393,6 +439,24 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 boolean enablePasswordVerify = data.getBooleanExtra(AppConstants.EXTRA_KEY_PASSWORD_VERIFICATION, false);
                 if (enablePasswordVerify)
                     deviceFragment.setResetShown();
+            }
+        }
+        if (requestCode == AppConstants.REQUEST_CODE_ALARM_MODE) {
+            if (resultCode == RESULT_OK) {
+                int slotType = data.getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
+                showSyncingProgressDialog();
+                ivSave.postDelayed(() -> {
+                    ArrayList<OrderTask> orderTasks = new ArrayList<>();
+                    if (slotType == 0)
+                        orderTasks.add(OrderTaskAssembler.getSlotParams(0));
+                    else if (slotType == 1)
+                        orderTasks.add(OrderTaskAssembler.getSlotParams(1));
+                    else if (slotType == 2)
+                        orderTasks.add(OrderTaskAssembler.getSlotParams(2));
+                    else if (slotType == 3)
+                        orderTasks.add(OrderTaskAssembler.getSlotParams(3));
+                    MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
+                }, 500);
             }
         }
     }
@@ -487,6 +551,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
         if (checkedId == R.id.radioBtn_alarm) {
             showSlotFragment();
+            getAlarmSwitch();
         } else if (checkedId == R.id.radioBtn_setting) {
             showSettingFragment();
             getSetting();
@@ -557,7 +622,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             return;
         Intent intent = new Intent(this, AlarmModeConfigActivity.class);
         intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
-        startActivity(intent);
+        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
     }
 
     public void onDoublePressMode(View view) {
@@ -565,7 +630,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             return;
         Intent intent = new Intent(this, AlarmModeConfigActivity.class);
         intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 1);
-        startActivity(intent);
+        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
     }
 
     public void onLongPressMode(View view) {
@@ -573,7 +638,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             return;
         Intent intent = new Intent(this, AlarmModeConfigActivity.class);
         intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 2);
-        startActivity(intent);
+        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
     }
 
     public void onAbnormalInactivityMode(View view) {
@@ -581,7 +646,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             return;
         Intent intent = new Intent(this, AlarmModeConfigActivity.class);
         intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 3);
-        startActivity(intent);
+        startActivityForResult(intent, AppConstants.REQUEST_CODE_ALARM_MODE);
     }
 
     public void onAlarmEvent(View view) {

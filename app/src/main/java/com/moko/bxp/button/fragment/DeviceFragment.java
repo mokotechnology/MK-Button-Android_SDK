@@ -31,6 +31,8 @@ public class DeviceFragment extends Fragment {
     RelativeLayout rlResetFactory;
     @BindView(R.id.rl_password)
     RelativeLayout rlPassword;
+    @BindView(R.id.et_device_id)
+    EditText etDeviceId;
 
     public DeviceFragment() {
     }
@@ -71,13 +73,20 @@ public class DeviceFragment extends Fragment {
         int length = deviceNameStr.length();
         if (length < 1 || length > 10)
             return false;
+        String deviceIdStr = etDeviceId.getText().toString();
+        if (TextUtils.isEmpty(deviceIdStr))
+            return false;
+        if (deviceIdStr.length() % 2 != 0)
+            return false;
         return true;
     }
 
     public void saveParams() {
         String deviceName = etDeviceName.getText().toString();
+        String deviceStr = etDeviceId.getText().toString();
         List<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.setDeviceName(deviceName));
+        orderTasks.add(OrderTaskAssembler.setDeviceId(deviceStr));
         MokoSupport.getInstance().sendOrder(orderTasks.toArray(new OrderTask[]{}));
     }
 
@@ -88,5 +97,9 @@ public class DeviceFragment extends Fragment {
 
     public void setResetShown() {
         rlResetFactory.setVisibility(View.VISIBLE);
+    }
+
+    public void setDeviceId(String deviceIdHex) {
+        etDeviceId.setText(deviceIdHex);
     }
 }

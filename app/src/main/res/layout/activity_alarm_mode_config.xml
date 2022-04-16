@@ -114,44 +114,6 @@
                         android:layout_marginTop="12dp">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerVertical="true"
-                            android:text="Device ID"
-                            android:textColor="@color/black_333333"
-                            android:textSize="15sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBaseline="@id/et_device_id"
-                            android:layout_centerVertical="true"
-                            android:layout_marginLeft="10dp"
-                            android:layout_toLeftOf="@id/et_device_id"
-                            android:text="0x"
-                            android:textColor="@color/black_333333"
-                            android:textSize="15sp" />
-
-                        <EditText
-                            android:id="@+id/et_device_id"
-                            android:layout_width="200dp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginRight="-1dp"
-                            android:digits="0123456789abcdefABCDEF"
-                            android:hint="1-6 bytes"
-                            android:maxLength="12"
-                            android:singleLine="true"
-                            android:textColor="@color/black_333333"
-                            android:textSize="15sp" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp">
-
-                        <TextView
                             android:id="@+id/adv_interval"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -404,11 +366,12 @@
                                 android:textSize="15sp" />
 
                             <TextView
+                                android:id="@+id/tv_abnormal_inactivity_time_tips"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/et_abnormal_inactivity_time"
                                 android:layout_marginTop="5dp"
-                                android:text="*After device keep static for 30s, abnormal inactivity alarm will be triggered and start advertising for 30s."
+                                android:text="@string/abnormal_inactivity_time_tips"
                                 android:textColor="@color/red_ff0000"
                                 android:textSize="12sp" />
                         </RelativeLayout>

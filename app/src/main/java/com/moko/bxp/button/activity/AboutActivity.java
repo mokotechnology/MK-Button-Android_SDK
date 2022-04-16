@@ -1,6 +1,7 @@
 package com.moko.bxp.button.activity;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -23,6 +24,8 @@ public class AboutActivity extends BaseActivity {
     TextView appVersion;
     @BindView(R.id.tv_feedback_log)
     TextView tvFeedbackLog;
+    @BindView(R.id.tv_company_website)
+    TextView tvCompanyWebsite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +33,7 @@ public class AboutActivity extends BaseActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
         appVersion.setText(String.format("Version:V%s", Utils.getVersionInfo(this)));
+        tvCompanyWebsite.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
 
 

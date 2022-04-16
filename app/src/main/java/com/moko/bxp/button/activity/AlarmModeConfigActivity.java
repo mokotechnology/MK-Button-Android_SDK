@@ -2,7 +2,9 @@ package com.moko.bxp.button.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -19,7 +21,6 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.AppConstants;
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -45,8 +46,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     TextView tvAlarmTitle;
     @BindView(R.id.iv_slot_adv_switch)
     ImageView ivSlotAdvSwitch;
-    @BindView(R.id.et_device_id)
-    EditText etDeviceId;
     @BindView(R.id.et_adv_interval)
     EditText etAdvInterval;
     @BindView(R.id.sb_adv_range_data)
@@ -79,6 +78,8 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     LinearLayout llSlotTriggerParams;
     @BindView(R.id.ll_slot_alarm_params)
     LinearLayout llSlotAlarmParams;
+    @BindView(R.id.tv_abnormal_inactivity_time_tips)
+    TextView tvAbnormalInactivityTimeTips;
 
     public boolean isConfigError;
     public int slotType;
@@ -115,6 +116,42 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         sbAdvRangeData.setOnSeekBarChangeListener(this);
         sbTxPower.setOnSeekBarChangeListener(this);
         sbTriggerTxPower.setOnSeekBarChangeListener(this);
+        etAbnormalInactivityTime.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String advTime = etTriggerAdvTime.getText().toString();
+                String inactivityTime = editable.toString();
+                tvAbnormalInactivityTimeTips.setText(getString(R.string.abnormal_inactivity_time_tips, inactivityTime, advTime));
+            }
+        });
+        etTriggerAdvTime.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                String advTime = editable.toString();
+                String inactivityTime = etAbnormalInactivityTime.getText().toString();
+                tvAbnormalInactivityTimeTips.setText(getString(R.string.abnormal_inactivity_time_tips, inactivityTime, advTime));
+            }
+        });
         EventBus.getDefault().register(this);
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
@@ -125,7 +162,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
             orderTasks.add(OrderTaskAssembler.getSlotParams(slotType));
             orderTasks.add(OrderTaskAssembler.getSlotTriggerParams(slotType));
             orderTasks.add(OrderTaskAssembler.getSlotAdvBeforeTriggerEnable(slotType));
-            orderTasks.add(OrderTaskAssembler.getDeviceId());
             if (slotType == 3) {
                 orderTasks.add(OrderTaskAssembler.getAbnormalInactivityAlarmStaticInterval());
             }
@@ -180,7 +216,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                 // write
                                 int result = value[4] & 0xFF;
                                 switch (configKeyEnum) {
-                                    case KEY_DEVICE_ID:
                                     case KEY_SLOT_PARAMS:
                                     case KEY_ABNORMAL_INACTIVITY_ALARM_STATIC_INTERVAL:
                                     case KEY_SLOT_ADV_BEFORE_TRIGGER_ENABLE:
@@ -195,11 +230,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                         if (isConfigError) {
                                             ToastUtils.showToast(AlarmModeConfigActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
-                                            AlertMessageDialog dialog = new AlertMessageDialog();
-                                            dialog.setMessage("Saved Successfully！");
-                                            dialog.setConfirm("OK");
-                                            dialog.setCancelGone();
-                                            dialog.show(getSupportFragmentManager());
+                                            ToastUtils.showToast(this, "Success");
                                         }
                                         break;
                                 }
@@ -246,12 +277,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                             ivAdvBeforeTriggered.setImageResource(isAdvBeforeTriggerOpen ? R.drawable.ic_checked : R.drawable.ic_unchecked);
                                         }
                                         break;
-                                    case KEY_DEVICE_ID:
-                                        if (length > 0) {
-                                            String deviceIdHex = MokoUtils.bytesToHexString(Arrays.copyOfRange(value, 4, 4 + length));
-                                            etDeviceId.setText(deviceIdHex);
-                                        }
-                                        break;
                                     case KEY_ABNORMAL_INACTIVITY_ALARM_STATIC_INTERVAL:
                                         if (length == 0x02) {
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
@@ -287,8 +312,19 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
             mLoadingMessageDialog.dismissAllowingStateLoss();
     }
 
+    @Override
+    public void onBackPressed() {
+        back();
+    }
 
     public void onBack(View view) {
+        back();
+    }
+
+    private void back() {
+        Intent intent = new Intent();
+        intent.putExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, slotType);
+        setResult(RESULT_OK, intent);
         finish();
     }
 
@@ -305,7 +341,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     }
 
     private void saveParams() {
-        String deviceStr = etDeviceId.getText().toString();
         String advIntervalStr = etAdvInterval.getText().toString();
         String triggerAdvTimeStr = etTriggerAdvTime.getText().toString();
         String triggerAdvIntervalStr = etTriggerAdvInterval.getText().toString();
@@ -315,7 +350,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         int triggerAdvInterval = Integer.parseInt(triggerAdvIntervalStr);
 
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
-        orderTasks.add(OrderTaskAssembler.setDeviceId(deviceStr));
         if (slotType == 3) {
             int abnormalInactivityTime = Integer.parseInt(abnormalInactivityTimeStr);
             orderTasks.add(OrderTaskAssembler.setAbnormalInactivityAlarmStaticInterval(abnormalInactivityTime));
@@ -339,20 +373,16 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     }
 
     private boolean isValid() {
-        String deviceStr = etDeviceId.getText().toString();
         String advIntervalStr = etAdvInterval.getText().toString();
         String triggerAdvTimeStr = etTriggerAdvTime.getText().toString();
         String triggerAdvIntervalStr = etTriggerAdvInterval.getText().toString();
         String abnormalInactivityTimeStr = etAbnormalInactivityTime.getText().toString();
-        if (TextUtils.isEmpty(deviceStr)
-                || TextUtils.isEmpty(advIntervalStr)
+        if (TextUtils.isEmpty(advIntervalStr)
                 || TextUtils.isEmpty(triggerAdvTimeStr)
                 || TextUtils.isEmpty(triggerAdvIntervalStr)
                 || (slotType == 3 && TextUtils.isEmpty(abnormalInactivityTimeStr))) {
             return false;
         }
-        if (deviceStr.length() % 2 != 0)
-            return false;
         int advInterval = Integer.parseInt(advIntervalStr);
         if (advInterval < 1 || advInterval > 500)
             return false;

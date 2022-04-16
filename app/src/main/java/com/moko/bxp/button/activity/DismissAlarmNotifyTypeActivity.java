@@ -12,7 +12,6 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.R;
-import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -168,11 +167,7 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
                                         if (isConfigError) {
                                             ToastUtils.showToast(DismissAlarmNotifyTypeActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
-                                            AlertMessageDialog dialog = new AlertMessageDialog();
-                                            dialog.setMessage("Saved Successfully！");
-                                            dialog.setConfirm("OK");
-                                            dialog.setCancelGone();
-                                            dialog.show(getSupportFragmentManager());
+                                            ToastUtils.showToast(this, "Success");
                                         }
                                         break;
                                 }
@@ -282,30 +277,28 @@ public class DismissAlarmNotifyTypeActivity extends BaseActivity {
     }
 
     private void saveParams() {
-        String ledTimeStr = etBlinkingTime.getText().toString();
-        String ledIntervalStr = etBlinkingInterval.getText().toString();
-        String vibrationTimeStr = etVibratingTime.getText().toString();
-        String vibrationIntervalStr = etVibratingInterval.getText().toString();
-        String buzzerTimeStr = etRingingTime.getText().toString();
-        String buzzerIntervalStr = etRingingInterval.getText().toString();
-
-        int ledTime = Integer.parseInt(ledTimeStr);
-        int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
-        int vibrationTime = Integer.parseInt(vibrationTimeStr);
-        int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
-        int buzzerTime = Integer.parseInt(buzzerTimeStr);
-        int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
-
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
+            String ledTimeStr = etBlinkingTime.getText().toString();
+            String ledIntervalStr = etBlinkingInterval.getText().toString();
+            int ledTime = Integer.parseInt(ledTimeStr);
+            int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
             // LED/LED+Vibration/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setDismissLEDNotifyAlarmParams(ledTime, ledInterval));
         }
         if (notifyType == 2 || notifyType == 4) {
+            String vibrationTimeStr = etVibratingTime.getText().toString();
+            String vibrationIntervalStr = etVibratingInterval.getText().toString();
+            int vibrationTime = Integer.parseInt(vibrationTimeStr);
+            int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
             // Vibration/LED+Vibration
             orderTasks.add(OrderTaskAssembler.setDismissVibrationNotifyAlarmParams(vibrationTime, vibrationInterval));
         }
         if (notifyType == 3 || notifyType == 5) {
+            String buzzerTimeStr = etRingingTime.getText().toString();
+            String buzzerIntervalStr = etRingingInterval.getText().toString();
+            int buzzerTime = Integer.parseInt(buzzerTimeStr);
+            int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
             // Buzzer/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setDismissBuzzerNotifyAlarmParams(buzzerTime, buzzerInterval));
         }
