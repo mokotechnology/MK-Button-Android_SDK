@@ -183,11 +183,8 @@ public class ExportDataActivity extends BaseActivity {
                                     exportData.triggerMode = "Long press mode";
                                     break;
                             }
-                            exportDatas.add(exportData);
-                            storeString.append(timestampStr);
-                            storeString.append("  ");
-                            storeString.append(exportData.triggerMode);
-                            storeString.append("\n");
+                            exportDatas.add(0, exportData);
+                            storeString.insert(0, String.format("%s  %s\n", timestampStr, exportData.triggerMode));
                         }
                         adapter.replaceData(exportDatas);
                         break;
