@@ -86,7 +86,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
     private boolean isAdvOpen;
     private boolean isTriggerOpen;
     private boolean isAdvBeforeTriggerOpen;
-    private int triggerRssi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -257,7 +256,6 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
                                     case KEY_SLOT_TRIGGER_PARAMS:
                                         if (length == 8 && value[4] == slotType) {
                                             int triggerEnable = value[5] & 0xFF;
-                                            triggerRssi = value[6];
                                             int triggerAdvInterval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
                                             int txPower = value[9];
                                             int triggerAdvTime = MokoUtils.toInt(Arrays.copyOfRange(value, 10, 12));
@@ -364,7 +362,7 @@ public class AlarmModeConfigActivity extends BaseActivity implements SeekBar.OnS
         orderTasks.add(OrderTaskAssembler.setSlotTriggerParams(
                 slotType,
                 isTriggerOpen ? 1 : 0,
-                triggerRssi,
+                sbAdvRangeData.getProgress() - 100,
                 triggerAdvInterval * 20,
                 TxPowerEnum.fromOrdinal(sbTriggerTxPower.getProgress()).getTxPower(),
                 triggerAdvTime));
