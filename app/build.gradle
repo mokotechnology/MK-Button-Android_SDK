@@ -9,7 +9,7 @@ android {
         applicationId "com.moko.bxp.button"
         minSdkVersion 18
         targetSdkVersion 30
-        versionCode 4
+        versionCode 6
         versionName "1.0.3"
     }
 
