@@ -3,7 +3,6 @@ package com.moko.bxp.button.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -11,7 +10,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivityRemoteReminderNotifyTypeBinding;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -26,31 +25,17 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class RemoteReminderActivity extends BaseActivity {
 
 
-    @BindView(R.id.et_blinking_time)
-    EditText etBlinkingTime;
-    @BindView(R.id.et_blinking_interval)
-    EditText etBlinkingInterval;
-    @BindView(R.id.et_vibrating_time)
-    EditText etVibratingTime;
-    @BindView(R.id.et_vibrating_interval)
-    EditText etVibratingInterval;
-    @BindView(R.id.et_ringing_time)
-    EditText etRingingTime;
-    @BindView(R.id.et_ringing_interval)
-    EditText etRingingInterval;
+    private ActivityRemoteReminderNotifyTypeBinding mBind;
     public boolean isConfigError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_remote_reminder_notify_type);
-        ButterKnife.bind(this);
+        mBind = ActivityRemoteReminderNotifyTypeBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         EventBus.getDefault().register(this);
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
@@ -133,24 +118,24 @@ public class RemoteReminderActivity extends BaseActivity {
                                         if (length == 4) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
-                                            etBlinkingTime.setText(String.valueOf(time));
-                                            etBlinkingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etBlinkingTime.setText(String.valueOf(time));
+                                            mBind.etBlinkingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_REMOTE_VIBRATION_NOTIFY_ALARM_PARAMS:
                                         if (length == 4) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
-                                            etVibratingTime.setText(String.valueOf(time));
-                                            etVibratingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etVibratingTime.setText(String.valueOf(time));
+                                            mBind.etVibratingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_REMOTE_BUZZER_NOTIFY_ALARM_PARAMS:
                                         if (length == 4) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 6, 8));
-                                            etRingingTime.setText(String.valueOf(time));
-                                            etRingingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etRingingTime.setText(String.valueOf(time));
+                                            mBind.etRingingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                 }
@@ -188,8 +173,8 @@ public class RemoteReminderActivity extends BaseActivity {
 
         if (isLEDValid()) {
             showSyncingProgressDialog();
-            String ledTimeStr = etBlinkingTime.getText().toString();
-            String ledIntervalStr = etBlinkingInterval.getText().toString();
+            String ledTimeStr = mBind.etBlinkingTime.getText().toString();
+            String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
             int ledTime = Integer.parseInt(ledTimeStr);
             int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -205,8 +190,8 @@ public class RemoteReminderActivity extends BaseActivity {
             return;
         if (isVibrationValid()) {
             showSyncingProgressDialog();
-            String vibrationTimeStr = etVibratingTime.getText().toString();
-            String vibrationIntervalStr = etVibratingInterval.getText().toString();
+            String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
+            String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
             int vibrationTime = Integer.parseInt(vibrationTimeStr);
             int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -222,8 +207,8 @@ public class RemoteReminderActivity extends BaseActivity {
             return;
         if (isBuzzerValid()) {
             showSyncingProgressDialog();
-            String buzzerTimeStr = etRingingTime.getText().toString();
-            String buzzerIntervalStr = etRingingInterval.getText().toString();
+            String buzzerTimeStr = mBind.etRingingTime.getText().toString();
+            String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
             int buzzerTime = Integer.parseInt(buzzerTimeStr);
             int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
@@ -239,8 +224,8 @@ public class RemoteReminderActivity extends BaseActivity {
     }
 
     private boolean isBuzzerValid() {
-        String buzzerTimeStr = etRingingTime.getText().toString();
-        String buzzerIntervalStr = etRingingInterval.getText().toString();
+        String buzzerTimeStr = mBind.etRingingTime.getText().toString();
+        String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
         if (TextUtils.isEmpty(buzzerTimeStr) || TextUtils.isEmpty(buzzerIntervalStr)) {
             return false;
         }
@@ -254,8 +239,8 @@ public class RemoteReminderActivity extends BaseActivity {
     }
 
     private boolean isLEDValid() {
-        String ledTimeStr = etBlinkingTime.getText().toString();
-        String ledIntervalStr = etBlinkingInterval.getText().toString();
+        String ledTimeStr = mBind.etBlinkingTime.getText().toString();
+        String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
         if (TextUtils.isEmpty(ledTimeStr) || TextUtils.isEmpty(ledIntervalStr)) {
             return false;
         }
@@ -269,8 +254,8 @@ public class RemoteReminderActivity extends BaseActivity {
     }
 
     private boolean isVibrationValid() {
-        String vibrationTimeStr = etVibratingTime.getText().toString();
-        String vibrationIntervalStr = etVibratingInterval.getText().toString();
+        String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
+        String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
         if (TextUtils.isEmpty(vibrationTimeStr) || TextUtils.isEmpty(vibrationIntervalStr)) {
             return false;
         }

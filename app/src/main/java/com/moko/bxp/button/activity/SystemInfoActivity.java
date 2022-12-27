@@ -2,7 +2,6 @@ package com.moko.bxp.button.activity;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -10,7 +9,7 @@ import com.moko.ble.lib.event.OrderTaskResponseEvent;
 import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
-import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivitySystemInfoBinding;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
@@ -24,34 +23,16 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class SystemInfoActivity extends BaseActivity {
 
 
-    @BindView(R.id.tv_soc)
-    TextView tvSoc;
-    @BindView(R.id.tv_mac_address)
-    TextView tvMacAddress;
-    @BindView(R.id.tv_device_model)
-    TextView tvDeviceModel;
-    @BindView(R.id.tv_software_version)
-    TextView tvSoftwareVersion;
-    @BindView(R.id.tv_firmware_version)
-    TextView tvFirmwareVersion;
-    @BindView(R.id.tv_hardware_version)
-    TextView tvHardwareVersion;
-    @BindView(R.id.tv_product_date)
-    TextView tvProductDate;
-    @BindView(R.id.tv_manufacturer)
-    TextView tvManufacturer;
+    private ActivitySystemInfoBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_system_info);
-        ButterKnife.bind(this);
+        mBind = ActivitySystemInfoBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         EventBus.getDefault().register(this);
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
             // 蓝牙未打开，开启蓝牙
@@ -120,7 +101,7 @@ public class SystemInfoActivity extends BaseActivity {
                                     case KEY_BATTERY_VOLTAGE:
                                         if (length == 2) {
                                             int battery = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                            tvSoc.setText(String.format("%dmV", battery));
+                                            mBind.tvSoc.setText(String.format("%dmV", battery));
                                         }
                                         break;
                                     case KEY_DEVICE_MAC:
@@ -132,7 +113,7 @@ public class SystemInfoActivity extends BaseActivity {
                                             stringBuffer.insert(8,":");
                                             stringBuffer.insert(11,":");
                                             stringBuffer.insert(14,":");
-                                            tvMacAddress.setText(stringBuffer.toString().toUpperCase());
+                                            mBind.tvMacAddress.setText(stringBuffer.toString().toUpperCase());
                                         }
                                         break;
 
@@ -141,22 +122,22 @@ public class SystemInfoActivity extends BaseActivity {
                         }
                         break;
                     case CHAR_MODEL_NUMBER:
-                        tvDeviceModel.setText(new String(value).trim());
+                        mBind.tvDeviceModel.setText(new String(value).trim());
                         break;
                     case CHAR_SOFTWARE_REVISION:
-                        tvSoftwareVersion.setText(new String(value).trim());
+                        mBind.tvSoftwareVersion.setText(new String(value).trim());
                         break;
                     case CHAR_FIRMWARE_REVISION:
-                        tvFirmwareVersion.setText(new String(value).trim());
+                        mBind.tvFirmwareVersion.setText(new String(value).trim());
                         break;
                     case CHAR_HARDWARE_REVISION:
-                        tvHardwareVersion.setText(new String(value).trim());
+                        mBind.tvHardwareVersion.setText(new String(value).trim());
                         break;
                     case CHAR_SERIAL_NUMBER:
-                        tvProductDate.setText(new String(value).trim());
+                        mBind.tvProductDate.setText(new String(value).trim());
                         break;
                     case CHAR_MANUFACTURER_NAME:
-                        tvManufacturer.setText(new String(value).trim());
+                        mBind.tvManufacturer.setText(new String(value).trim());
                         break;
                 }
             }

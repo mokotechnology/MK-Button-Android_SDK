@@ -13,9 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.elvishew.xlog.XLog;
@@ -27,6 +24,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.button.AppConstants;
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.adapter.DeviceListAdapter;
+import com.moko.bxp.button.databinding.ActivityMainBinding;
 import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
@@ -57,25 +55,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 
 public class MainActivity extends BaseActivity implements MokoScanDeviceCallback, BaseQuickAdapter.OnItemChildClickListener {
 
-    @BindView(R.id.iv_refresh)
-    ImageView ivRefresh;
-    @BindView(R.id.rv_devices)
-    RecyclerView rvDevices;
-    @BindView(R.id.tv_device_num)
-    TextView tvDeviceNum;
-    @BindView(R.id.rl_edit_filter)
-    RelativeLayout rl_edit_filter;
-    @BindView(R.id.rl_filter)
-    RelativeLayout rl_filter;
-    @BindView(R.id.tv_filter)
-    TextView tv_filter;
+    private ActivityMainBinding mBind;
     private boolean mReceiverTag = false;
     private ConcurrentHashMap<String, AdvInfo> advInfoHashMap;
     private ArrayList<AdvInfo> advInfoList;
@@ -87,8 +71,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+        mBind = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         MokoSupport.getInstance().init(getApplicationContext());
         advInfoHashMap = new ConcurrentHashMap<>();
         advInfoList = new ArrayList<>();
@@ -96,11 +80,11 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
         adapter.replaceData(advInfoList);
         adapter.setOnItemChildClickListener(this);
         adapter.openLoadAnimation();
-        rvDevices.setLayoutManager(new LinearLayoutManager(this));
+        mBind.rvDevices.setLayoutManager(new LinearLayoutManager(this));
         DividerItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         itemDecoration.setDrawable(ContextCompat.getDrawable(this, R.drawable.shape_recycleview_divider));
-        rvDevices.addItemDecoration(itemDecoration);
-        rvDevices.setAdapter(adapter);
+        mBind.rvDevices.addItemDecoration(itemDecoration);
+        mBind.rvDevices.setAdapter(adapter);
 
         mHandler = new Handler(Looper.getMainLooper());
         mokoBleScanner = new MokoBleScanner(this);
@@ -275,7 +259,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                         @Override
                         public void run() {
                             adapter.replaceData(advInfoList);
-                            tvDeviceNum.setText(String.format("DEVICE(%d)", advInfoList.size()));
+                            mBind.tvDeviceNum.setText(String.format("DEVICE(%d)", advInfoList.size()));
                         }
                     });
                     try {
@@ -425,7 +409,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 showPasswordDialog();
             } else {
                 showLoadingProgressDialog();
-                ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(advInfo.mac), 500);
+                mBind.ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(advInfo.mac), 500);
             }
         }
     }
@@ -444,7 +428,7 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                 XLog.i(password);
                 mPassword = password;
                 showLoadingProgressDialog();
-                ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(mSelectedDeviceMac), 500);
+                mBind.ivRefresh.postDelayed(() -> MokoSupport.getInstance().connDevice(mSelectedDeviceMac), 500);
             }
 
             @Override
@@ -497,8 +481,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             if (!TextUtils.isEmpty(filterName)
                     || !TextUtils.isEmpty(showFilterMac)
                     || filterRssi != -100) {
-                rl_filter.setVisibility(View.VISIBLE);
-                rl_edit_filter.setVisibility(View.GONE);
+                mBind.rlFilter.setVisibility(View.VISIBLE);
+                mBind.rlEditFilter.setVisibility(View.GONE);
                 StringBuilder stringBuilder = new StringBuilder();
                 if (!TextUtils.isEmpty(filterName)) {
                     stringBuilder.append(filterName);
@@ -512,10 +496,10 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
                     stringBuilder.append(String.format("%sdBm", filterRssi + ""));
                     stringBuilder.append(";");
                 }
-                tv_filter.setText(stringBuilder.toString());
+                mBind.tvFilter.setText(stringBuilder.toString());
             } else {
-                rl_filter.setVisibility(View.GONE);
-                rl_edit_filter.setVisibility(View.VISIBLE);
+                mBind.rlFilter.setVisibility(View.GONE);
+                mBind.rlEditFilter.setVisibility(View.VISIBLE);
             }
             if (isWindowLocked())
                 return;
@@ -568,8 +552,8 @@ public class MainActivity extends BaseActivity implements MokoScanDeviceCallback
             mHandler.removeMessages(0);
             mokoBleScanner.stopScanDevice();
         }
-        rl_filter.setVisibility(View.GONE);
-        rl_edit_filter.setVisibility(View.VISIBLE);
+        mBind.rlFilter.setVisibility(View.GONE);
+        mBind.rlEditFilter.setVisibility(View.VISIBLE);
         filterName = "";
         filterMac = "";
         filterRssi = -100;

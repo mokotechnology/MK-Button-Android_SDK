@@ -8,31 +8,19 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
 
 import com.moko.ble.lib.task.OrderTask;
-import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.FragmentDeviceBinding;
 import com.moko.support.MokoSupport;
 import com.moko.support.OrderTaskAssembler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class DeviceFragment extends Fragment {
     private final String FILTER_ASCII = "[ -~]*";
 
-    @BindView(R.id.et_device_name)
-    EditText etDeviceName;
-    @BindView(R.id.rl_reset_factory)
-    RelativeLayout rlResetFactory;
-    @BindView(R.id.rl_password)
-    RelativeLayout rlPassword;
-    @BindView(R.id.et_device_id)
-    EditText etDeviceId;
+    private FragmentDeviceBinding mBind;
 
     public DeviceFragment() {
     }
@@ -46,8 +34,7 @@ public class DeviceFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_device, container, false);
-        ButterKnife.bind(this, view);
+        mBind = FragmentDeviceBinding.inflate(inflater, container, false);
         InputFilter filter = new InputFilter() {
             @Override
             public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
@@ -58,22 +45,22 @@ public class DeviceFragment extends Fragment {
                 return null;
             }
         };
-        etDeviceName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), filter});
-        return view;
+        mBind.etDeviceName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10), filter});
+        return mBind.getRoot();
     }
 
     public void setDeviceName(String deviceName) {
-        etDeviceName.setText(deviceName);
+        mBind.etDeviceName.setText(deviceName);
     }
 
     public boolean isValid() {
-        String deviceNameStr = etDeviceName.getText().toString();
+        String deviceNameStr = mBind.etDeviceName.getText().toString();
         if (TextUtils.isEmpty(deviceNameStr))
             return false;
         int length = deviceNameStr.length();
         if (length < 1 || length > 10)
             return false;
-        String deviceIdStr = etDeviceId.getText().toString();
+        String deviceIdStr = mBind.etDeviceId.getText().toString();
         if (TextUtils.isEmpty(deviceIdStr))
             return false;
         if (deviceIdStr.length() % 2 != 0)
@@ -82,8 +69,8 @@ public class DeviceFragment extends Fragment {
     }
 
     public void saveParams() {
-        String deviceName = etDeviceName.getText().toString();
-        String deviceStr = etDeviceId.getText().toString();
+        String deviceName = mBind.etDeviceName.getText().toString();
+        String deviceStr = mBind.etDeviceId.getText().toString();
         List<OrderTask> orderTasks = new ArrayList<>();
         orderTasks.add(OrderTaskAssembler.setDeviceName(deviceName));
         orderTasks.add(OrderTaskAssembler.setDeviceId(deviceStr));
@@ -91,15 +78,15 @@ public class DeviceFragment extends Fragment {
     }
 
     public void setViewShown(boolean enablePasswordVerify) {
-        rlResetFactory.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
-        rlPassword.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
+        mBind.rlResetFactory.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
+        mBind.rlPassword.setVisibility(enablePasswordVerify ? View.VISIBLE : View.GONE);
     }
 
     public void setResetShown() {
-        rlResetFactory.setVisibility(View.VISIBLE);
+        mBind.rlResetFactory.setVisibility(View.VISIBLE);
     }
 
     public void setDeviceId(String deviceIdHex) {
-        etDeviceId.setText(deviceIdHex);
+        mBind.etDeviceId.setText(deviceIdHex);
     }
 }

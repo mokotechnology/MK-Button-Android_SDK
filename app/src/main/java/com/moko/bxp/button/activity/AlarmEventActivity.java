@@ -3,7 +3,6 @@ package com.moko.bxp.button.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -12,7 +11,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.AppConstants;
-import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivityAlarmEventBinding;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.bxp.button.utils.Utils;
@@ -30,26 +29,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class AlarmEventActivity extends BaseActivity {
 
 
-    @BindView(R.id.tv_utc_time)
-    TextView tvUtcTime;
-    @BindView(R.id.tv_single_press_event_count)
-    TextView tvSinglePressEventCount;
-    @BindView(R.id.tv_double_press_event_count)
-    TextView tvDoublePressEventCount;
-    @BindView(R.id.tv_long_press_event_count)
-    TextView tvLongPressEventCount;
+    private ActivityAlarmEventBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_event);
-        ButterKnife.bind(this);
+        mBind = ActivityAlarmEventBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
 
         EventBus.getDefault().register(this);
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
@@ -118,7 +107,7 @@ public class AlarmEventActivity extends BaseActivity {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Success！");
-                                            tvSinglePressEventCount.setText("0");
+                                            mBind.tvSinglePressEventCount.setText("0");
                                             if (MokoSupport.getInstance().exportSingleEvents != null) {
                                                 MokoSupport.getInstance().exportSingleEvents.clear();
                                                 MokoSupport.getInstance().storeSingleEventString = null;
@@ -130,7 +119,7 @@ public class AlarmEventActivity extends BaseActivity {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Success！");
-                                            tvDoublePressEventCount.setText("0");
+                                            mBind.tvDoublePressEventCount.setText("0");
                                             if (MokoSupport.getInstance().exportDoubleEvents != null) {
                                                 MokoSupport.getInstance().exportDoubleEvents.clear();
                                                 MokoSupport.getInstance().storeDoubleEventString = null;
@@ -142,7 +131,7 @@ public class AlarmEventActivity extends BaseActivity {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Opps！Save failed. Please check the input characters and try again.");
                                         } else {
                                             ToastUtils.showToast(AlarmEventActivity.this, "Success！");
-                                            tvLongPressEventCount.setText("0");
+                                            mBind.tvLongPressEventCount.setText("0");
                                             if (MokoSupport.getInstance().exportLongEvents != null) {
                                                 MokoSupport.getInstance().exportLongEvents.clear();
                                                 MokoSupport.getInstance().storeLongEventString = null;
@@ -168,25 +157,25 @@ public class AlarmEventActivity extends BaseActivity {
                                             byteBuffer.flip();
                                             long time = byteBuffer.getLong();
                                             Calendar calendar = Utils.getCalenderFromTime(time);
-                                            tvUtcTime.setText(Utils.calendar2strDateGMT(calendar, AppConstants.PATTERN_YYYY_MM_DD_T_HH_MM_SS_Z));
+                                            mBind.tvUtcTime.setText(Utils.calendar2strDateGMT(calendar, AppConstants.PATTERN_YYYY_MM_DD_T_HH_MM_SS_Z));
                                         }
                                         break;
                                     case KEY_SINGLE_PRESS_EVENTS:
                                         if (length == 2) {
                                             int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 4 + length));
-                                            tvSinglePressEventCount.setText(String.valueOf(count));
+                                            mBind.tvSinglePressEventCount.setText(String.valueOf(count));
                                         }
                                         break;
                                     case KEY_DOUBLE_PRESS_EVENTS:
                                         if (length == 2) {
                                             int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 4 + length));
-                                            tvDoublePressEventCount.setText(String.valueOf(count));
+                                            mBind.tvDoublePressEventCount.setText(String.valueOf(count));
                                         }
                                         break;
                                     case KEY_LONG_PRESS_EVENTS:
                                         if (length == 2) {
                                             int count = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 4 + length));
-                                            tvLongPressEventCount.setText(String.valueOf(count));
+                                            mBind.tvLongPressEventCount.setText(String.valueOf(count));
                                         }
                                         break;
 

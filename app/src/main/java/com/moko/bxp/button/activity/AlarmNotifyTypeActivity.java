@@ -3,7 +3,6 @@ package com.moko.bxp.button.activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.EditText;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -13,6 +12,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.AppConstants;
 import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivityAlarmNotifyTypeBinding;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -27,34 +27,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import cn.carbswang.android.numberpickerview.library.NumberPickerView;
-
 public class AlarmNotifyTypeActivity extends BaseActivity {
 
 
-    @BindView(R.id.npv_notify_type)
-    NumberPickerView npvNotifyType;
-    @BindView(R.id.et_blinking_time)
-    EditText etBlinkingTime;
-    @BindView(R.id.et_blinking_interval)
-    EditText etBlinkingInterval;
-    @BindView(R.id.cl_led_notify)
-    ConstraintLayout clLedNotify;
-    @BindView(R.id.et_vibrating_time)
-    EditText etVibratingTime;
-    @BindView(R.id.et_vibrating_interval)
-    EditText etVibratingInterval;
-    @BindView(R.id.cl_vibration_notify)
-    ConstraintLayout clVibrationNotify;
-    @BindView(R.id.et_ringing_time)
-    EditText etRingingTime;
-    @BindView(R.id.et_ringing_interval)
-    EditText etRingingInterval;
-    @BindView(R.id.cl_buzzer_notify)
-    ConstraintLayout clBuzzerNotify;
+    private ActivityAlarmNotifyTypeBinding mBind;
     public boolean isConfigError;
     public int slotType;
     private String[] alarmNotifyTypeArray;
@@ -63,36 +39,36 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_notify_type);
-        ButterKnife.bind(this);
+        mBind = ActivityAlarmNotifyTypeBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
         }
 
         alarmNotifyTypeArray = getResources().getStringArray(R.array.alarm_notify_type);
-        npvNotifyType.setDisplayedValues(alarmNotifyTypeArray);
-        npvNotifyType.setMinValue(0);
-        npvNotifyType.setMaxValue(alarmNotifyTypeArray.length - 1);
-        npvNotifyType.setValue(notifyType);
-        npvNotifyType.setOnValueChangedListener((picker, oldVal, newVal) -> {
+        mBind.npvNotifyType.setDisplayedValues(alarmNotifyTypeArray);
+        mBind.npvNotifyType.setMinValue(0);
+        mBind.npvNotifyType.setMaxValue(alarmNotifyTypeArray.length - 1);
+        mBind.npvNotifyType.setValue(notifyType);
+        mBind.npvNotifyType.setOnValueChangedListener((picker, oldVal, newVal) -> {
             notifyType = newVal;
             if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
                 // LED/LED+Vibration/LED+Buzzer
-                clLedNotify.setVisibility(View.VISIBLE);
+                mBind.clLedNotify.setVisibility(View.VISIBLE);
             } else {
-                clLedNotify.setVisibility(View.GONE);
+                mBind.clLedNotify.setVisibility(View.GONE);
             }
             if (notifyType == 2 || notifyType == 4) {
                 // Vibration/LED+Vibration
-                clVibrationNotify.setVisibility(View.VISIBLE);
+                mBind.clVibrationNotify.setVisibility(View.VISIBLE);
             } else {
-                clVibrationNotify.setVisibility(View.GONE);
+                mBind.clVibrationNotify.setVisibility(View.GONE);
             }
             if (notifyType == 3 || notifyType == 5) {
                 // Buzzer/LED+Buzzer
-                clBuzzerNotify.setVisibility(View.VISIBLE);
+                mBind.clBuzzerNotify.setVisibility(View.VISIBLE);
             } else {
-                clBuzzerNotify.setVisibility(View.GONE);
+                mBind.clBuzzerNotify.setVisibility(View.GONE);
             }
         });
 
@@ -183,24 +159,24 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                     case KEY_SLOT_TRIGGER_ALARM_NOTIFY_TYPE:
                                         if (length == 2 && value[4] == slotType) {
                                             notifyType = value[5] & 0xFF;
-                                            npvNotifyType.setValue(notifyType);
+                                            mBind.npvNotifyType.setValue(notifyType);
                                             if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
                                                 // LED/LED+Vibration/LED+Buzzer
-                                                clLedNotify.setVisibility(View.VISIBLE);
+                                                mBind.clLedNotify.setVisibility(View.VISIBLE);
                                             } else {
-                                                clLedNotify.setVisibility(View.GONE);
+                                                mBind.clLedNotify.setVisibility(View.GONE);
                                             }
                                             if (notifyType == 2 || notifyType == 4) {
                                                 // Vibration/LED+Vibration
-                                                clVibrationNotify.setVisibility(View.VISIBLE);
+                                                mBind.clVibrationNotify.setVisibility(View.VISIBLE);
                                             } else {
-                                                clVibrationNotify.setVisibility(View.GONE);
+                                                mBind.clVibrationNotify.setVisibility(View.GONE);
                                             }
                                             if (notifyType == 3 || notifyType == 5) {
                                                 // Buzzer/LED+Buzzer
-                                                clBuzzerNotify.setVisibility(View.VISIBLE);
+                                                mBind.clBuzzerNotify.setVisibility(View.VISIBLE);
                                             } else {
-                                                clBuzzerNotify.setVisibility(View.GONE);
+                                                mBind.clBuzzerNotify.setVisibility(View.GONE);
                                             }
                                         }
                                         break;
@@ -208,24 +184,24 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
                                         if (length == 5 && value[4] == slotType) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
-                                            etBlinkingTime.setText(String.valueOf(time));
-                                            etBlinkingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etBlinkingTime.setText(String.valueOf(time));
+                                            mBind.etBlinkingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_SLOT_VIBRATION_NOTIFY_ALARM_PARAMS:
                                         if (length == 5 && value[4] == slotType) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
-                                            etVibratingTime.setText(String.valueOf(time));
-                                            etVibratingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etVibratingTime.setText(String.valueOf(time));
+                                            mBind.etVibratingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                     case KEY_SLOT_BUZZER_NOTIFY_ALARM_PARAMS:
                                         if (length == 5 && value[4] == slotType) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 5, 7));
                                             int interval = MokoUtils.toInt(Arrays.copyOfRange(value, 7, 9));
-                                            etRingingTime.setText(String.valueOf(time));
-                                            etRingingInterval.setText(String.valueOf(interval / 100));
+                                            mBind.etRingingTime.setText(String.valueOf(time));
+                                            mBind.etRingingInterval.setText(String.valueOf(interval / 100));
                                         }
                                         break;
                                 }
@@ -277,24 +253,24 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
     private void saveParams() {
         ArrayList<OrderTask> orderTasks = new ArrayList<>();
         if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
-            String ledTimeStr = etBlinkingTime.getText().toString();
-            String ledIntervalStr = etBlinkingInterval.getText().toString();
+            String ledTimeStr = mBind.etBlinkingTime.getText().toString();
+            String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
             int ledTime = Integer.parseInt(ledTimeStr);
             int ledInterval = Integer.parseInt(ledIntervalStr) * 100;
             // LED/LED+Vibration/LED+Buzzer
             orderTasks.add(OrderTaskAssembler.setSlotLEDNotifyAlarmParams(slotType, ledTime, ledInterval));
         }
         if (notifyType == 2 || notifyType == 4) {
-            String vibrationTimeStr = etVibratingTime.getText().toString();
-            String vibrationIntervalStr = etVibratingInterval.getText().toString();
+            String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
+            String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
             int vibrationTime = Integer.parseInt(vibrationTimeStr);
             int vibrationInterval = Integer.parseInt(vibrationIntervalStr) * 100;
             // Vibration/LED+Vibration
             orderTasks.add(OrderTaskAssembler.setSlotVibrationNotifyAlarmParams(slotType, vibrationTime, vibrationInterval));
         }
         if (notifyType == 3 || notifyType == 5) {
-            String buzzerTimeStr = etRingingTime.getText().toString();
-            String buzzerIntervalStr = etRingingInterval.getText().toString();
+            String buzzerTimeStr = mBind.etRingingTime.getText().toString();
+            String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
             int buzzerTime = Integer.parseInt(buzzerTimeStr);
             int buzzerInterval = Integer.parseInt(buzzerIntervalStr) * 100;
             // Buzzer/LED+Buzzer
@@ -307,12 +283,12 @@ public class AlarmNotifyTypeActivity extends BaseActivity {
     private boolean isValid() {
         if (notifyType == 0)
             return true;
-        String ledTimeStr = etBlinkingTime.getText().toString();
-        String ledIntervalStr = etBlinkingInterval.getText().toString();
-        String vibrationTimeStr = etVibratingTime.getText().toString();
-        String vibrationIntervalStr = etVibratingInterval.getText().toString();
-        String buzzerTimeStr = etRingingTime.getText().toString();
-        String buzzerIntervalStr = etRingingInterval.getText().toString();
+        String ledTimeStr = mBind.etBlinkingTime.getText().toString();
+        String ledIntervalStr = mBind.etBlinkingInterval.getText().toString();
+        String vibrationTimeStr = mBind.etVibratingTime.getText().toString();
+        String vibrationIntervalStr = mBind.etVibratingInterval.getText().toString();
+        String buzzerTimeStr = mBind.etRingingTime.getText().toString();
+        String buzzerIntervalStr = mBind.etRingingInterval.getText().toString();
         if (notifyType == 1 || notifyType == 4 || notifyType == 5) {
             if (TextUtils.isEmpty(ledTimeStr) || TextUtils.isEmpty(ledIntervalStr)) {
                 return false;

@@ -5,35 +5,27 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.moko.bxp.button.BaseApplication;
 import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivityAboutBinding;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.bxp.button.utils.Utils;
 
 import java.io.File;
 import java.util.Calendar;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 
 public class AboutActivity extends BaseActivity {
-    @BindView(R.id.app_version)
-    TextView appVersion;
-    @BindView(R.id.tv_feedback_log)
-    TextView tvFeedbackLog;
-    @BindView(R.id.tv_company_website)
-    TextView tvCompanyWebsite;
+    private ActivityAboutBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
-        ButterKnife.bind(this);
-        appVersion.setText(String.format("Version:V%s", Utils.getVersionInfo(this)));
-        tvCompanyWebsite.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        mBind = ActivityAboutBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
+        mBind.appVersion.setText(String.format("Version:V%s", Utils.getVersionInfo(this)));
+        mBind.tvCompanyWebsite.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
     }
 
 

@@ -5,24 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.moko.bxp.button.R;
 import com.moko.bxp.button.activity.DeviceInfoActivity;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.moko.bxp.button.databinding.FragmentAlarmBinding;
 
 public class AlarmFragment extends Fragment {
 
-    @BindView(R.id.tv_single_press_mode_switch)
-    TextView tvSinglePressModeSwitch;
-    @BindView(R.id.tv_double_press_mode_switch)
-    TextView tvDoublePressModeSwitch;
-    @BindView(R.id.tv_long_press_mode_switch)
-    TextView tvLongPressModeSwitch;
-    @BindView(R.id.tv_abnormal_inactivity_mode_switch)
-    TextView tvAbnormalInactivityModeSwitch;
+    private FragmentAlarmBinding mBind;
     private DeviceInfoActivity activity;
 
     public AlarmFragment() {
@@ -36,26 +25,25 @@ public class AlarmFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_alarm, container, false);
-        ButterKnife.bind(this, view);
+        mBind = FragmentAlarmBinding.inflate(inflater, container, false);
         activity = (DeviceInfoActivity) getActivity();
-        return view;
+        return mBind.getRoot();
     }
 
 
     public void setSinglePressModeSwitch(int onOff) {
-        tvSinglePressModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
+        mBind.tvSinglePressModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
     }
 
     public void setDoublePressModeSwitch(int onOff) {
-        tvDoublePressModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
+        mBind.tvDoublePressModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
     }
 
     public void setLongPressModeSwitch(int onOff) {
-        tvLongPressModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
+        mBind.tvLongPressModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
     }
 
     public void setAbnormalInactivityModeSwitch(int onOff) {
-        tvAbnormalInactivityModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
+        mBind.tvAbnormalInactivityModeSwitch.setText(onOff == 1 ? "ON" : "OFF");
     }
 }

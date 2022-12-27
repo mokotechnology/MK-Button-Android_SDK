@@ -6,8 +6,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -17,6 +15,7 @@ import com.moko.bxp.button.AppConstants;
 import com.moko.bxp.button.BaseApplication;
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.adapter.ExportDataListAdapter;
+import com.moko.bxp.button.databinding.ActivityExportDataBinding;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.Utils;
 import com.moko.support.MokoSupport;
@@ -39,9 +38,6 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 public class ExportDataActivity extends BaseActivity {
 
@@ -53,16 +49,7 @@ public class ExportDataActivity extends BaseActivity {
     private static final String EXPORT_FILE_LONG_TITLE = "Long_press_trigger_event";
 
     private static String PATH_LOGCAT;
-    @BindView(R.id.iv_sync)
-    ImageView ivSync;
-    @BindView(R.id.tv_sync)
-    TextView tvSync;
-    @BindView(R.id.tv_export)
-    TextView tvExport;
-    @BindView(R.id.rv_export_data)
-    RecyclerView rvExportData;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
+    private ActivityExportDataBinding mBind;
 
     private StringBuilder storeString;
     private ArrayList<ExportData> exportDatas;
@@ -79,28 +66,28 @@ public class ExportDataActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_export_data);
-        ButterKnife.bind(this);
+        mBind = ActivityExportDataBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         if (getIntent() != null && getIntent().getExtras() != null) {
             slotType = getIntent().getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
         }
         switch (slotType) {
             case 0:
-                tvTitle.setText("Single press event");
+                mBind.tvTitle.setText("Single press event");
                 exportDatas = MokoSupport.getInstance().exportSingleEvents;
                 storeString = MokoSupport.getInstance().storeSingleEventString;
                 PATH_LOGCAT = BaseApplication.PATH_LOGCAT + File.separator + EXPORT_FILE_SINGLE;
                 exportTitle = EXPORT_FILE_SINGLE_TITLE;
                 break;
             case 1:
-                tvTitle.setText("Double press event");
+                mBind.tvTitle.setText("Double press event");
                 exportDatas = MokoSupport.getInstance().exportDoubleEvents;
                 storeString = MokoSupport.getInstance().storeDoubleEventString;
                 PATH_LOGCAT = BaseApplication.PATH_LOGCAT + File.separator + EXPORT_FILE_DOUBLE;
                 exportTitle = EXPORT_FILE_DOUBLE_TITLE;
                 break;
             case 2:
-                tvTitle.setText("Long press event");
+                mBind.tvTitle.setText("Long press event");
                 exportDatas = MokoSupport.getInstance().exportLongEvents;
                 storeString = MokoSupport.getInstance().storeLongEventString;
                 PATH_LOGCAT = BaseApplication.PATH_LOGCAT + File.separator + EXPORT_FILE_LONG;
@@ -108,7 +95,7 @@ public class ExportDataActivity extends BaseActivity {
                 break;
         }
         if (exportDatas != null && exportDatas.size() > 0 && storeString != null) {
-            tvExport.setEnabled(true);
+            mBind.tvExport.setEnabled(true);
         } else {
             exportDatas = new ArrayList<>();
             storeString = new StringBuilder();
@@ -116,8 +103,8 @@ public class ExportDataActivity extends BaseActivity {
         adapter = new ExportDataListAdapter();
         adapter.openLoadAnimation();
         adapter.replaceData(exportDatas);
-        rvExportData.setLayoutManager(new LinearLayoutManager(this));
-        rvExportData.setAdapter(adapter);
+        mBind.rvExportData.setLayoutManager(new LinearLayoutManager(this));
+        mBind.rvExportData.setAdapter(adapter);
         timeZone = TimeZone.getTimeZone("GMT");
         sdf = new SimpleDateFormat(AppConstants.PATTERN_YYYY_MM_DD_T_HH_MM_SS_Z, Locale.US);
         sdf.setTimeZone(timeZone);
@@ -159,7 +146,7 @@ public class ExportDataActivity extends BaseActivity {
                         if (flag == 0x02 && cmd == (slotType + 1) && length == 0x09) {
                             if (!mIsShown) {
                                 mIsShown = true;
-                                tvExport.setEnabled(true);
+                                mBind.tvExport.setEnabled(true);
                             }
                             ExportData exportData = new ExportData();
                             byte[] timeBytes = Arrays.copyOfRange(value, 4, 12);
@@ -244,8 +231,8 @@ public class ExportDataActivity extends BaseActivity {
         if (!mIsSync) {
             mIsSync = true;
             Animation animation = AnimationUtils.loadAnimation(this, R.anim.rotate_refresh);
-            ivSync.startAnimation(animation);
-            tvSync.setText("Stop");
+            mBind.ivSync.startAnimation(animation);
+            mBind.tvSync.setText("Stop");
             if (slotType == 0) {
                 MokoSupport.getInstance().enableSingleTriggerNotify();
             }
@@ -257,8 +244,8 @@ public class ExportDataActivity extends BaseActivity {
             }
         } else {
             mIsSync = false;
-            ivSync.clearAnimation();
-            tvSync.setText("Sync");
+            mBind.ivSync.clearAnimation();
+            mBind.tvSync.setText("Sync");
             if (slotType == 0) {
                 MokoSupport.getInstance().disableSingleTriggerNotify();
             }
@@ -275,7 +262,7 @@ public class ExportDataActivity extends BaseActivity {
         if (isWindowLocked())
             return;
         storeString = new StringBuilder();
-        tvExport.setEnabled(false);
+        mBind.tvExport.setEnabled(false);
         exportDatas.clear();
         adapter.replaceData(exportDatas);
         switch (slotType) {
@@ -305,7 +292,7 @@ public class ExportDataActivity extends BaseActivity {
             return;
         showSyncingProgressDialog();
         writeTrackedFile("");
-        tvExport.postDelayed(() -> {
+        mBind.tvExport.postDelayed(() -> {
             dismissSyncProgressDialog();
             final String log = storeString.toString();
             if (!TextUtils.isEmpty(log)) {

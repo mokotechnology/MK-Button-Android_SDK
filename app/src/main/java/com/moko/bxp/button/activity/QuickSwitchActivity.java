@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -18,6 +16,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.bxp.button.AppConstants;
 import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivityQuickSwitchBinding;
 import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
@@ -32,42 +31,16 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class QuickSwitchActivity extends BaseActivity {
 
-    @BindView(R.id.iv_connectable)
-    ImageView ivConnectable;
-    @BindView(R.id.tv_connectable_status)
-    TextView tvConnectableStatus;
-    @BindView(R.id.iv_button_power)
-    ImageView ivButtonPower;
-    @BindView(R.id.tv_button_power)
-    TextView tvButtonPower;
-    @BindView(R.id.iv_password_verify)
-    ImageView ivPasswordVerify;
-    @BindView(R.id.tv_password_verify)
-    TextView tvPasswordVerify;
-    @BindView(R.id.iv_hw_reset)
-    ImageView ivHwReset;
-    @BindView(R.id.tv_hw_reset)
-    TextView tvHwReset;
-    @BindView(R.id.iv_scan_response_packet)
-    ImageView ivScanResponsePacket;
-    @BindView(R.id.tv_scan_response_packet)
-    TextView tvScanResponsePacket;
-    @BindView(R.id.iv_dismiss_alarm_enable)
-    ImageView ivDismissAlarmEnable;
-    @BindView(R.id.tv_dismiss_alarm_enable)
-    TextView tvDismissAlarmEnable;
+    private ActivityQuickSwitchBinding mBind;
     public boolean isConfigError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_quick_switch);
-        ButterKnife.bind(this);
+        mBind = ActivityQuickSwitchBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
 
         EventBus.getDefault().register(this);
 
@@ -229,54 +202,54 @@ public class QuickSwitchActivity extends BaseActivity {
 
     public void setPasswordVerify(int enable) {
         this.enablePasswordVerify = enable == 1;
-        ivPasswordVerify.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvPasswordVerify.setText(enablePasswordVerify ? "Enable" : "Disable");
-        tvPasswordVerify.setEnabled(enablePasswordVerify);
+        mBind.ivPasswordVerify.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvPasswordVerify.setText(enablePasswordVerify ? "Enable" : "Disable");
+        mBind.tvPasswordVerify.setEnabled(enablePasswordVerify);
     }
 
     boolean enableConnected;
 
     public void setConnectable(int enable) {
         enableConnected = enable == 1;
-        ivConnectable.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvConnectableStatus.setText(enableConnected ? "Enable" : "Disable");
-        tvConnectableStatus.setEnabled(enableConnected);
+        mBind.ivConnectable.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvConnectableStatus.setText(enableConnected ? "Enable" : "Disable");
+        mBind.tvConnectableStatus.setEnabled(enableConnected);
     }
 
     private boolean enableButtonPower;
 
     public void setButtonPower(int enable) {
         this.enableButtonPower = enable == 1;
-        ivButtonPower.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvButtonPower.setText(enableButtonPower ? "Enable" : "Disable");
-        tvButtonPower.setEnabled(enableButtonPower);
+        mBind.ivButtonPower.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvButtonPower.setText(enableButtonPower ? "Enable" : "Disable");
+        mBind.tvButtonPower.setEnabled(enableButtonPower);
     }
 
     private boolean enableHWReset;
 
     public void setButtonResetEnable(int enable) {
         this.enableHWReset = enable == 1;
-        ivHwReset.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvHwReset.setText(enableHWReset ? "Enable" : "Disable");
-        tvHwReset.setEnabled(enableHWReset);
+        mBind.ivHwReset.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvHwReset.setText(enableHWReset ? "Enable" : "Disable");
+        mBind.tvHwReset.setEnabled(enableHWReset);
     }
 
     private boolean enableScanResponse;
 
     public void setScanResponseEnable(int enable) {
         this.enableScanResponse = enable == 1;
-        ivScanResponsePacket.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvScanResponsePacket.setText(enableScanResponse ? "Enable" : "Disable");
-        tvScanResponsePacket.setEnabled(enableScanResponse);
+        mBind.ivScanResponsePacket.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvScanResponsePacket.setText(enableScanResponse ? "Enable" : "Disable");
+        mBind.tvScanResponsePacket.setEnabled(enableScanResponse);
     }
 
     private boolean enableDismissAlarm;
 
     public void setDismissAlarmEnable(int enable) {
         this.enableDismissAlarm = enable == 1;
-        ivDismissAlarmEnable.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        tvDismissAlarmEnable.setText(enableDismissAlarm ? "Enable" : "Disable");
-        tvDismissAlarmEnable.setEnabled(enableDismissAlarm);
+        mBind.ivDismissAlarmEnable.setImageResource(enable == 1 ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.tvDismissAlarmEnable.setText(enableDismissAlarm ? "Enable" : "Disable");
+        mBind.tvDismissAlarmEnable.setEnabled(enableDismissAlarm);
     }
 
     public void onChangeConnectable(View view) {

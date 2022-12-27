@@ -14,11 +14,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.elvishew.xlog.XLog;
@@ -30,6 +26,7 @@ import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.AppConstants;
 import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivityDeviceInfoBinding;
 import com.moko.bxp.button.dialog.AlertMessageDialog;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.dialog.ModifyPasswordDialog;
@@ -54,8 +51,6 @@ import java.util.Arrays;
 
 import androidx.annotation.IdRes;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import no.nordicsemi.android.dfu.DfuProgressListener;
 import no.nordicsemi.android.dfu.DfuProgressListenerAdapter;
 import no.nordicsemi.android.dfu.DfuServiceInitiator;
@@ -64,20 +59,7 @@ import no.nordicsemi.android.dfu.DfuServiceListenerHelper;
 public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
     public static final int REQUEST_CODE_SELECT_FIRMWARE = 0x10;
 
-    @BindView(R.id.frame_container)
-    FrameLayout frameContainer;
-    @BindView(R.id.radioBtn_alarm)
-    RadioButton radioBtnAlarm;
-    @BindView(R.id.radioBtn_setting)
-    RadioButton radioBtnSetting;
-    @BindView(R.id.radioBtn_device)
-    RadioButton radioBtnDevice;
-    @BindView(R.id.rg_options)
-    RadioGroup rgOptions;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
-    @BindView(R.id.iv_save)
-    ImageView ivSave;
+    private ActivityDeviceInfoBinding mBind;
     private FragmentManager fragmentManager;
     private AlarmFragment alarmFragment;
     private SettingFragment settingFragment;
@@ -93,12 +75,12 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_device_info);
-        ButterKnife.bind(this);
+        mBind = ActivityDeviceInfoBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         mPassword = getIntent().getStringExtra(AppConstants.EXTRA_KEY_PASSWORD);
         fragmentManager = getFragmentManager();
         initFragment();
-        rgOptions.setOnCheckedChangeListener(this);
+        mBind.rgOptions.setOnCheckedChangeListener(this);
         EventBus.getDefault().register(this);
         // 注册广播接收器
         IntentFilter filter = new IntentFilter();
@@ -137,7 +119,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                     return;
                 if (MokoSupport.getInstance().isBluetoothOpen()) {
                     if (isUpgrading) {
-                        tvTitle.postDelayed(() -> {
+                        mBind.tvTitle.postDelayed(() -> {
                             dismissDFUProgressDialog();
                         }, 2000);
                     } else {
@@ -445,7 +427,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
             if (resultCode == RESULT_OK) {
                 int slotType = data.getIntExtra(AppConstants.EXTRA_KEY_SLOT_TYPE, 0);
                 showSyncingProgressDialog();
-                ivSave.postDelayed(() -> {
+                mBind.ivSave.postDelayed(() -> {
                     ArrayList<OrderTask> orderTasks = new ArrayList<>();
                     if (slotType == 0)
                         orderTasks.add(OrderTaskAssembler.getSlotParams(0));
@@ -513,38 +495,38 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
 
     private void showSlotFragment() {
         if (alarmFragment != null) {
-            ivSave.setVisibility(View.GONE);
+            mBind.ivSave.setVisibility(View.GONE);
             fragmentManager.beginTransaction()
                     .hide(settingFragment)
                     .hide(deviceFragment)
                     .show(alarmFragment)
                     .commit();
         }
-        tvTitle.setText(getString(R.string.alarm_title));
+        mBind.tvTitle.setText(getString(R.string.alarm_title));
     }
 
     private void showSettingFragment() {
         if (settingFragment != null) {
-            ivSave.setVisibility(View.VISIBLE);
+            mBind.ivSave.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction()
                     .hide(alarmFragment)
                     .hide(deviceFragment)
                     .show(settingFragment)
                     .commit();
         }
-        tvTitle.setText(getString(R.string.setting_title));
+        mBind.tvTitle.setText(getString(R.string.setting_title));
     }
 
     private void showDeviceFragment() {
         if (deviceFragment != null) {
-            ivSave.setVisibility(View.VISIBLE);
+            mBind.ivSave.setVisibility(View.VISIBLE);
             fragmentManager.beginTransaction()
                     .hide(alarmFragment)
                     .hide(settingFragment)
                     .show(deviceFragment)
                     .commit();
         }
-        tvTitle.setText(getString(R.string.device_title));
+        mBind.tvTitle.setText(getString(R.string.device_title));
     }
 
     @Override
@@ -599,7 +581,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
     public void onSave(View view) {
         if (isWindowLocked())
             return;
-        if (radioBtnSetting.isChecked()) {
+        if (mBind.radioBtnSetting.isChecked()) {
             if (settingFragment.isValid()) {
                 showSyncingProgressDialog();
                 settingFragment.saveParams();
@@ -607,7 +589,7 @@ public class DeviceInfoActivity extends BaseActivity implements RadioGroup.OnChe
                 ToastUtils.showToast(this, "Opps！Save failed. Please check the input characters and try again.");
             }
         }
-        if (radioBtnDevice.isChecked()) {
+        if (mBind.radioBtnDevice.isChecked()) {
             if (deviceFragment.isValid()) {
                 showSyncingProgressDialog();
                 deviceFragment.saveParams();

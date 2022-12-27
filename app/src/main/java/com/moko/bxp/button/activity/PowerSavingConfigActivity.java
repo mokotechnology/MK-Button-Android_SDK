@@ -5,9 +5,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.moko.ble.lib.MokoConstants;
 import com.moko.ble.lib.event.ConnectStatusEvent;
@@ -16,6 +13,7 @@ import com.moko.ble.lib.task.OrderTask;
 import com.moko.ble.lib.task.OrderTaskResponse;
 import com.moko.ble.lib.utils.MokoUtils;
 import com.moko.bxp.button.R;
+import com.moko.bxp.button.databinding.ActivityPowerSavingConfigBinding;
 import com.moko.bxp.button.dialog.LoadingMessageDialog;
 import com.moko.bxp.button.utils.ToastUtils;
 import com.moko.support.MokoSupport;
@@ -30,31 +28,20 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 public class PowerSavingConfigActivity extends BaseActivity {
 
 
-    @BindView(R.id.iv_power_saving_mode)
-    ImageView ivPowerSavingMode;
-    @BindView(R.id.et_static_trigger_time)
-    EditText etStaticTriggerTime;
-    @BindView(R.id.cl_static_trigger_time)
-    ConstraintLayout clStaticTriggerTime;
-    @BindView(R.id.tv_static_trigger_time_tips)
-    TextView tvStaticTriggerTimeTips;
+    private ActivityPowerSavingConfigBinding mBind;
     public boolean isConfigError;
     public boolean isEnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_power_saving_config);
-        ButterKnife.bind(this);
+        mBind = ActivityPowerSavingConfigBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
         EventBus.getDefault().register(this);
-        etStaticTriggerTime.addTextChangedListener(new TextWatcher() {
+        mBind.etStaticTriggerTime.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -68,7 +55,7 @@ public class PowerSavingConfigActivity extends BaseActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 String triggerTime = editable.toString();
-                tvStaticTriggerTimeTips.setText(getString(R.string.static_trigger_time_tips, triggerTime));
+                mBind.tvStaticTriggerTimeTips.setText(getString(R.string.static_trigger_time_tips, triggerTime));
             }
         });
         if (!MokoSupport.getInstance().isBluetoothOpen()) {
@@ -153,14 +140,14 @@ public class PowerSavingConfigActivity extends BaseActivity {
                                     case KEY_POWER_SAVING_ENABLE:
                                         if (length == 1) {
                                             isEnable = value[4] == 1;
-                                            ivPowerSavingMode.setImageResource(isEnable ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-                                            clStaticTriggerTime.setVisibility(isEnable ? View.VISIBLE : View.GONE);
+                                            mBind.ivPowerSavingMode.setImageResource(isEnable ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+                                            mBind.clStaticTriggerTime.setVisibility(isEnable ? View.VISIBLE : View.GONE);
                                         }
                                         break;
                                     case KEY_POWER_SAVING_STATIC_TRIGGER_TIME:
                                         if (length == 2) {
                                             int time = MokoUtils.toInt(Arrays.copyOfRange(value, 4, 6));
-                                            etStaticTriggerTime.setText(String.valueOf(time));
+                                            mBind.etStaticTriggerTime.setText(String.valueOf(time));
                                         }
                                         break;
                                 }
@@ -197,7 +184,7 @@ public class PowerSavingConfigActivity extends BaseActivity {
             return;
         if (isValid()) {
             showSyncingProgressDialog();
-            String timeStr = etStaticTriggerTime.getText().toString();
+            String timeStr = mBind.etStaticTriggerTime.getText().toString();
             int time = Integer.parseInt(timeStr);
             ArrayList<OrderTask> orderTasks = new ArrayList<>();
             orderTasks.add(OrderTaskAssembler.setPowerSavingStaticTriggerTime(time));
@@ -213,7 +200,7 @@ public class PowerSavingConfigActivity extends BaseActivity {
     }
 
     private boolean isValid() {
-        String timeStr = etStaticTriggerTime.getText().toString();
+        String timeStr = mBind.etStaticTriggerTime.getText().toString();
         if (TextUtils.isEmpty(timeStr)) {
             return false;
         }
@@ -227,7 +214,7 @@ public class PowerSavingConfigActivity extends BaseActivity {
         if (isWindowLocked())
             return;
         isEnable = !isEnable;
-        ivPowerSavingMode.setImageResource(isEnable ? R.drawable.ic_checked : R.drawable.ic_unchecked);
-        clStaticTriggerTime.setVisibility(isEnable ? View.VISIBLE : View.GONE);
+        mBind.ivPowerSavingMode.setImageResource(isEnable ? R.drawable.ic_checked : R.drawable.ic_unchecked);
+        mBind.clStaticTriggerTime.setVisibility(isEnable ? View.VISIBLE : View.GONE);
     }
 }
