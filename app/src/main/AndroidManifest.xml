@@ -22,61 +22,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
-        <activity
-            android:name="com.moko.bxp.button.activity.AboutActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-
-        <activity
-            android:name="com.moko.bxp.button.activity.DeviceInfoActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.AlarmModeConfigActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.AccDataActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.ExportDataActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.QuickSwitchActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.AlarmNotifyTypeActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.DismissAlarmNotifyTypeActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.AlarmEventActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.RemoteReminderActivity"
-            android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.PowerSavingConfigActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.moko.bxp.button.activity.SystemInfoActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.moko.bxp.button.fileprovider"
@@ -86,8 +31,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
-        <service android:name="com.moko.bxp.button.service.DfuService" />
 
     </application>
 

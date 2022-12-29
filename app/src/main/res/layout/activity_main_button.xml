@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_ffffff"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/blue_2f84d0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Product List"
+            android:textColor="@color/white_ffffff"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onSelectCR"
+        android:orientation="vertical"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:text="BXP-B-CR Firmware"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="Applicable product: B1"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp" />
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginTop="20dp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:onClick="onSelectD"
+        android:orientation="vertical"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp">
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableRight="@drawable/arrow_right"
+            android:drawablePadding="10dp"
+            android:gravity="center_vertical"
+            android:text="BXP-B-D Firmware"
+            android:textColor="@color/black_333333"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="Applicable product: H1/H2/H3/H3 Button/H3 Pro/H5/W3/W3 Pro/W6"
+            android:textColor="@color/black_333333"
+            android:textSize="13sp" />
+
+        <View
+            style="@style/divider_line"
+            android:layout_marginTop="20dp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</LinearLayout>
