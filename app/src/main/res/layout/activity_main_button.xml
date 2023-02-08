@@ -80,8 +80,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="Applicable product: H1/H2/H3/H3 Button/H3 Pro/H5/W3/W3 Pro/W6"
+            android:text="Applicable product: H1/H2/H3/\nH3 Button/B2/H5/W3/W3 Pro/W6"
             android:textColor="@color/black_333333"
+            android:lineSpacingMultiplier="1.2"
             android:textSize="13sp" />
 
         <View

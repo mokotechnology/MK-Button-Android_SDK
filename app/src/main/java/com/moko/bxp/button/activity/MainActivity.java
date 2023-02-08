@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.cr.activity.CRMainActivity;
+import com.moko.bxp.button.d.activity.DMainActivity;
 import com.moko.bxp.button.dialog.AlertMessageDialog;
 
 
@@ -25,6 +26,7 @@ public class MainActivity extends BaseActivity {
 
     public void onSelectD(View view) {
         if (isWindowLocked()) return;
+        startActivity(new Intent(this, DMainActivity.class));
     }
 
     @Override
