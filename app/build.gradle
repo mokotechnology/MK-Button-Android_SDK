@@ -38,6 +38,7 @@ android {
 
     lintOptions {
         abortOnError false
+        checkReleaseBuilds false
     }
 
     repositories {
@@ -49,8 +50,8 @@ android {
 
 dependencies {
     implementation files('libs/mokoBleLib.jar')
-    implementation(name: 'MKButtonCR_1.0.0_202303301619', ext: 'aar')
-    implementation(name: 'MKButtonD_1.0.1_202303301650', ext: 'aar')
+    implementation(name: 'MKButtonCR_1.0.0_202304061046', ext: 'aar')
+    implementation(name: 'MKButtonD_1.0.1_202304061026', ext: 'aar')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
