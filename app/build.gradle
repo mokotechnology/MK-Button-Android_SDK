@@ -51,7 +51,7 @@ android {
 dependencies {
     implementation files('libs/mokoBleLib.jar')
     implementation(name: 'MKButtonCR_1.0.0_202304111151', ext: 'aar')
-    implementation(name: 'MKButtonD_1.0.1_202305161740', ext: 'aar')
+    implementation(name: 'MKButtonD_1.0.4_202305171123', ext: 'aar')
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
