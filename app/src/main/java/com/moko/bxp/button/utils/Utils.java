@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 
+import com.moko.bxp.button.cr.BuildConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -61,28 +63,27 @@ public class Utils {
             Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 uri = IOUtils.insertDownloadFile(context, files[0]);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            } else {
                 uri = FileProvider.getUriForFile(context, "com.moko.bxp.button.fileprovider", files[0]);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            } else {
-                uri = Uri.fromFile(files[0]);
             }
             intent.putExtra(Intent.EXTRA_STREAM, uri);
             intent.putExtra(Intent.EXTRA_TEXT, body);
         } else {
             ArrayList<Uri> uris = new ArrayList<>();
+            ArrayList<CharSequence> charSequences = new ArrayList<>();
             for (int i = 0; i < files.length; i++) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    Uri fileUri = IOUtils.insertDownloadFile(context, files[i]);
+                    Uri fileUri = com.moko.bxp.button.cr.utils.IOUtils.insertDownloadFile(context, files[i]);
                     uris.add(fileUri);
                 } else {
-                    uris.add(Uri.fromFile(files[i]));
+                    Uri uri = FileProvider.getUriForFile(context, "com.moko.bxp.button.fileprovider", files[i]);
+                    uris.add(uri);
                 }
+                charSequences.add(body);
             }
             intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
             intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-            ArrayList<CharSequence> charSequences = new ArrayList<>();
-            charSequences.add(body);
             intent.putExtra(Intent.EXTRA_TEXT, charSequences);
         }
         String[] addresses = {address};

@@ -1,15 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.moko.bxp.button"
-        minSdkVersion 18
-        targetSdkVersion 31
-        versionCode 8
-        versionName "1.0.5"
+        namespace = "com.moko.bxp.button"
+        applicationId = "com.moko.bxp.button"
+        minSdkVersion 26
+        targetSdk 34
+        versionCode 9
+        versionName "1.0.6"
         multiDexEnabled true
         def formatDate = new Date().format("yyyyMMddHHmm")
         setProperty("archivesBaseName", "MKButton_${versionName}_${formatDate}")
@@ -50,9 +51,10 @@ android {
 
 dependencies {
     implementation files('libs/mokoBleLib.jar')
-    implementation(name: 'MKButtonCR_1.0.1_202402271433', ext: 'aar')
-    implementation(name: 'MKButtonD_1.0.5_202402271443', ext: 'aar')
+    implementation(name: 'MKButtonCR_1.0.2_202412091148', ext: 'aar')
+    implementation(name: 'MKButtonD_1.0.6_202412092006', ext: 'aar')
 
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.0'
@@ -65,7 +67,7 @@ dependencies {
     // common
     implementation 'no.nordicsemi.android.support.v18:scanner:1.6.0'
     implementation 'com.elvishew:xlog:1.6.1'
-    implementation 'no.nordicsemi.android:dfu:0.6.2'
+    implementation 'no.nordicsemi.android:dfu:2.4.1'
     implementation 'org.greenrobot:eventbus:3.2.0'
-    implementation 'no.nordicsemi.android:ble:2.5.1'
+    implementation 'no.nordicsemi.android:ble:2.7.2'
 }

@@ -6,17 +6,21 @@ import android.view.View;
 
 import com.moko.bxp.button.R;
 import com.moko.bxp.button.cr.activity.CRMainActivity;
+import com.moko.bxp.button.cr.databinding.ActivityMainBinding;
 import com.moko.bxp.button.d.activity.DMainActivity;
+import com.moko.bxp.button.databinding.ActivityMainButtonBinding;
 import com.moko.bxp.button.dialog.AlertMessageDialog;
 
 
 public class MainActivity extends BaseActivity {
 
+    private ActivityMainButtonBinding mBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_button);
+        mBind = ActivityMainButtonBinding.inflate(getLayoutInflater());
+        setContentView(mBind.getRoot());
     }
 
     public void onSelectCR(View view) {
