@@ -2,15 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdk 34
-    buildToolsVersion "29.0.3"
 
     defaultConfig {
         namespace = "com.moko.bxp.button"
         applicationId = "com.moko.bxp.button"
         minSdkVersion 26
         targetSdk 34
-        versionCode 9
-        versionName "1.0.6"
+        versionCode 200
+        versionName "2.0.0"
         multiDexEnabled true
         def formatDate = new Date().format("yyyyMMddHHmm")
         setProperty("archivesBaseName", "MKButton_${versionName}_${formatDate}")
