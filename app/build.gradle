@@ -8,8 +8,8 @@ android {
         applicationId = "com.moko.bxp.button"
         minSdkVersion 26
         targetSdk 34
-        versionCode 200
-        versionName "2.0.0"
+        versionCode 201
+        versionName "2.0.1"
         multiDexEnabled true
         def formatDate = new Date().format("yyyyMMddHHmm")
         setProperty("archivesBaseName", "MKButton_${versionName}_${formatDate}")
@@ -50,8 +50,8 @@ android {
 
 dependencies {
     implementation files('libs/mokoBleLib.jar')
-    implementation(name: 'MKButtonCR_1.0.2_202501081209', ext: 'aar')
-    implementation(name: 'MKButtonD_1.0.7_202501081201', ext: 'aar')
+    implementation(name: 'MKButtonCR_1.0.2_202502061713', ext: 'aar')
+    implementation(name: 'MKButtonD_1.0.7_202502061714', ext: 'aar')
 
     implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
